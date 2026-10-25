@@ -50,10 +50,25 @@ Worst case (16 voices x 4 oscillators x 8 unison = 512 oscillators) uses about 2
 - **Stab** (5): Melodic, Rave Hoover, Dub Chord, Brass, Detroit
 - **Arp** (7): Melodic Sequence, Trance Gate, Random Bubbles, Pulse Chords, Octave Bass, Psy Triplet, Melodic Techno Bounce
 - **FX** (6): Noise Riser, Downlifter, Impact, Wind, Laser Zap, Alarm
-All presets are level-matched: a measurement pass renders each one with a part that suits its
-category, then `tools/make_presets.py tools/levels.json` sets the master volume so they play at a
-similar loudness (transient-heavy sounds are capped by their peak instead). Presets live in
-`tools/make_presets.py`; edit them there and regenerate `Source/FactoryPresets.inc`.
+### How the presets are made and checked
+Presets are written in `tools/make_presets.py`. `tools/preset_lab.cpp` renders each one with the real
+engine, effects and arpeggiator (no JUCE needed), playing a part that suits its category (melodies with
+a mod-wheel vibrato swell for leads, offbeat and rolling lines for basses, rhythmic chords for plucks,
+held chords for pads and arps), and measures it. `tools/tune_presets.py` then enforces targets:
+
+- **Wash:** delay/reverb tails between notes must stay well below the notes
+  (leads and plucks at least 12 dB, keys 14 dB, basses 18 dB).
+- **Pluck:** plucks must lose at least 45% of their brightness within about 100 ms (stabs 35%).
+- **Distinct:** no two presets in a category may be closer than 2.5 dB (spectrum and envelope).
+- **Level:** matched loudness, peaks at or below -1.5 dBFS.
+
+Its adjustments are stored in `tools/tuning.json` and `tools/levels.json`.
+
+```
+g++ -O2 -std=c++17 tools/preset_lab.cpp -o preset_lab
+python3 tools/tune_presets.py ./preset_lab
+python3 tools/make_presets.py tools/levels.json
+```
 
 ## Roadmap
 - Stage 4: preset import (needs reference preset files from a licensed copy of the original synth)

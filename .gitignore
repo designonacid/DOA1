@@ -3,3 +3,5 @@ build/
 *.user
 .vs/
 .idea/
+tools/presets.tsv
+preset_lab

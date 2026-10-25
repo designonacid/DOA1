@@ -120,9 +120,9 @@ PRESETS = [
     # Afterlife-style main lead: big, wide supersaw, plucky filter envelope, slow pitch drift, long space
     P("Techno Lead - Afterlife Supersaw",
       osc("a1", voices=8, det=0.4, vol=0.75), osc("a2", voices=6, det=0.3, oct=-1, vol=0.45), osc("b1", SAW, oct=1, voices=4, det=0.35, vol=0.2),
-      filt("a", cut=1400, reso=0.15, key=0.4), filt("b", HP, 12, cut=600), menv(1, 0.001, 0.45, 0.35, 0.4, 0.35, "cut"),
+      filt("a", cut=1400, reso=0.15, key=0.4), filt("b", HP, 12, cut=600), menv(1, 0.001, 0.45, 0.35, 0.4, 0.35, "cutA"),
       amps(0.002, 0.6, 0.75, 0.4), lfo(2, "sine", 0.2, 0.004, "pitch"), mm(1, "vib", "pitch", 0.012), mm(2, "vel", "cutA", 0.2),
-      eq(-2, 2.5), delay("1/8D", 0.45, 0.28, 4500), reverb(0.92, 0.32, 0.55), comp(-16, 3, 8, 150, 2)),
+      eq(-2, 2.5), delay("1/8D", 0.4, 0.2, 4500), reverb(0.88, 0.2, 0.55), comp(-16, 3, 8, 150, 2)),
     # Anyma / Artbat style saw lead: plucky envelope plus LFO pitch modulation
     P("Techno Lead - Plucky Saw",
       osc("a1", voices=6, det=0.28), osc("a2", voices=4, det=0.2, semi=12, vol=0.35),
@@ -166,7 +166,7 @@ PRESETS = [
     # Cinematic fifth: lead doubled a perfect fifth up, very wide and washed
     P("Techno Lead - Cinematic Fifth",
       osc("a1", voices=6, det=0.3), osc("a2", semi=7, voices=6, det=0.3, vol=0.5), osc("b1", TRI, oct=1, vol=0.25),
-      filt("a", cut=2200, reso=0.15, key=0.4), menv(1, 0.001, 0.6, 0.5, 0.5, 0.25, "cutA"), amps(0.01, 0.8, 0.8, 0.6),
+      filt("a", cut=2200, reso=0.15, key=0.4), menv(1, 0.001, 0.6, 0.5, 0.5, 0.25, "cutA"), amps(0.01, 0.8, 0.8, 0.3),
       mm(1, "vib", "pitch", 0.01), lfo(1, "sine", 4.8, 0.0), mm(2, "at", "cutA", 0.25),
       chorus(0.3, 0.35, 14, 0.3), delay("1/4D", 0.45, 0.25, 4500), reverb(0.95, 0.38, 0.5)),
     # Dark detuned: low-register detuned saws, slow filter drift, saturated
@@ -193,9 +193,9 @@ PRESETS = [
       osc("a1", voices=4, det=0.2), filt("a", cut=400, reso=0.3, key=0.5),
       menv(1, 0.001, 0.12, 0, 0.1, 0.5, "cutA"), amp("a", 0.001, 0.18, 0, 0.1), delay("1/16", 0.3, 0.18, 5000), reverb(0.5, 0.12)),
     P("Pluck - Pizzicato",
-      osc("a1", voices=2, det=0.08), osc("a2", TRI, vol=0.5),
-      filt("a", cut=900, reso=0.1, key=0.8), menv(1, 0.001, 0.15, 0, 0.1, 0.35, "cutA"), amp("a", 0.001, 0.25, 0, 0.15),
-      reverb(0.7, 0.25)),
+      osc("a1", TRI, vol=0.7), osc("a2", SAW, oct=1, vol=0.3),
+      filt("a", slope=12, cut=2500, reso=0.05, key=0.8), menv(1, 0.001, 0.08, 0, 0.08, 0.3, "cutA"), amp("a", 0.001, 0.16, 0, 0.12),
+      mm(1, "vel", "vol", 0.4), reverb(0.6, 0.12)),
     P("Pluck - Koto",
       osc("a1", PULSE, vol=0.6), osc("a2", SAW, oct=1, vol=0.3),
       filt("a", BP, 12, cut=1200, reso=0.45, key=0.7), menv(1, 0.001, 0.2, 0, 0.2, 0.3, "cutA"), amp("a", 0.001, 0.7, 0, 0.5),
@@ -250,9 +250,9 @@ PRESETS = [
 
     # ---------------------------------------------------------------- BASS
     P("Bass - Reese",
-      glob(mode=1, porta=0.05), osc("a1", oct=-2, voices=2, det=0.12), osc("a2", oct=-2, fine=8, voices=2, det=0.1),
-      osc("b1", SINE, oct=-3, vol=0.6), filt("a", cut=700, reso=0.15, drive=0.4), amps(0.002, 0.3, 1.0, 0.15),
-      lfo(1, "tri", 0.25, 0.08, "cutA"), dist(0, 0.35, 0.6), comp(-18, 4, 5, 120, 4)),
+      glob(mode=1, porta=0.05), osc("a1", oct=-2, voices=4, det=0.3, pan=-0.3), osc("a2", oct=-2, fine=18, voices=4, det=0.3, pan=0.3),
+      osc("b1", SINE, oct=-3, vol=0.6), filt("a", cut=450, reso=0.1, drive=0.5), amps(0.002, 0.3, 1.0, 0.15),
+      lfo(1, "tri", 0.25, 0.1, "cutA"), phaser(0.15, 0.5, 0.3, 0.35), dist(0, 0.35, 0.6), comp(-18, 4, 5, 120, 4)),
     P("Bass - Sub",
       glob(mode=2, porta=0.03), OFF_A1, osc("b1", SINE, oct=-2, vol=0.9), osc("b2", TRI, oct=-2, vol=0.15),
       amp("b", 0.003, 0.3, 1.0, 0.12), comp(-14, 3, 10, 100, 2)),
@@ -273,24 +273,24 @@ PRESETS = [
       filt("a", cut=400, reso=0.25, drive=0.5), menv(1, 0.001, 0.4, 0.2, 0.3, 0.3, "cutA"), amps(0.002, 0.4, 0.8, 0.2),
       lfo(1, "sine", 0.12, 0.08, "cutA"), dist(0, 0.25, 0.5), comp(-16, 4, 8, 120, 3)),
     P("Bass - Wobble",
-      glob(mode=1), osc("a1", oct=-2, voices=3, det=0.12), osc("b1", SINE, oct=-2, vol=0.5),
-      filt("a", cut=300, reso=0.5, drive=0.4), lfo(1, "sine", 3.2, 0.35, "cutA"), amps(0.002, 0.3, 1.0, 0.15),
-      mm(1, "wheel", "drive", 0.5), dist(0, 0.4, 0.6), comp(-18, 4, 5, 100, 4)),
+      glob(mode=1), osc("a1", oct=-2, voices=3, det=0.12), osc("a2", PULSE, oct=-1, vol=0.4), osc("b1", SINE, oct=-2, vol=0.5),
+      filt("a", slope=12, cut=220, reso=0.65, drive=0.5), lfo(1, "sine", 4.27, 0.5, "cutA"), amps(0.002, 0.3, 1.0, 0.15),
+      mm(1, "wheel", "drive", 0.5), dist(2, 0.35, 0.5), comp(-18, 4, 5, 100, 4)),
     P("Bass - Pluck",
-      glob(mode=1), osc("a1", oct=-2, voices=2, det=0.08), osc("a2", PULSE, oct=-1, vol=0.35),
-      filt("a", cut=250, reso=0.25), menv(1, 0.001, 0.18, 0, 0.1, 0.45, "cutA"), amp("a", 0.001, 0.35, 0, 0.1)),
+      glob(mode=1), osc("a1", PULSE, oct=-2, vol=0.6), osc("b1", SINE, oct=-2, vol=0.6),
+      filt("a", cut=160, reso=0.15), menv(1, 0.001, 0.3, 0, 0.2, 0.4, "cutA"), amps(0.001, 0.5, 0, 0.12)),
     P("Bass - Growl",
       glob(mode=1, porta=0.04), osc("a1", oct=-2, voices=2, det=0.1), osc("a2", PULSE, oct=-1, voices=2, det=0.08, vol=0.5),
       filt("a", BP, 12, cut=600, reso=0.5, drive=0.5), lfo(1, "tri", 1.8, 0.3, "cutA"), amps(0.002, 0.3, 1.0, 0.15),
       dist(2, 0.45, 0.7), comp(-18, 5, 3, 90, 5)),
     P("Bass - Deep House",
-      glob(mode=2, porta=0.04), osc("a1", PULSE, oct=-2, vol=0.6), osc("b1", SINE, oct=-2, vol=0.6),
-      filt("a", cut=500, reso=0.2), menv(1, 0.001, 0.25, 0.3, 0.2, 0.25, "cutA"), amps(0.002, 0.3, 0.9, 0.12), comp(-14, 3, 10, 120, 2)),
+      glob(mode=2, porta=0.04), osc("a1", TRI, oct=-2, vol=0.7), osc("b1", SINE, oct=-2, vol=0.6),
+      filt("a", slope=12, cut=900), amps(0.002, 0.35, 0.4, 0.1), comp(-14, 3, 10, 120, 2)),
 
     # ---------------------------------------------------------------- KEYS
     P("Keys - Electric Piano",
       osc("a1", SINE, vol=0.7), osc("a2", TRI, oct=1, vol=0.25),
-      amp("a", 0.002, 1.5, 0.15, 0.5), menv(1, 0.001, 0.05, 0, 0.05, 0.08, "pitchA"),
+      amp("a", 0.002, 1.5, 0.15, 0.3), menv(1, 0.001, 0.05, 0, 0.05, 0.08, "pitchA"),
       mm(1, "vel", "vol", 0.3), lfo(1, "sine", 4.0, 0.25, "pan"), chorus(0.5, 0.3, 10, 0.25), reverb(0.6, 0.18)),
     P("Keys - Organ",
       osc("a1", SINE, vol=0.6), osc("a2", SINE, oct=1, vol=0.4), osc("b1", SINE, oct=2, vol=0.25), osc("b2", PULSE, oct=1, vol=0.08),
@@ -304,7 +304,7 @@ PRESETS = [
       menv(1, 0.001, 0.15, 0, 0.1, 0.3, "cutA"), amp("a", 0.001, 0.5, 0.1, 0.1), mm(1, "vel", "cutA", 0.3), phaser(0.5, 0.5, 0.3, 0.3)),
     P("Keys - Bells",
       OFF_A1, osc("b1", SINE, vol=0.6), osc("b2", SINE, oct=1, semi=7, fine=3, vol=0.35),
-      amp("b", 0.001, 2.0, 0, 1.5), delay("1/4", 0.35, 0.2, 7000), reverb(0.85, 0.3)),
+      amp("b", 0.001, 1.5, 0, 0.5), delay("1/4", 0.3, 0.1, 7000), reverb(0.75, 0.14)),
 
     # ---------------------------------------------------------------- STABS
     P("Stab - Melodic",
@@ -385,6 +385,41 @@ PRESETS = [
       amp("a", 0.01, 0.3, 1.0, 0.2), reverb(0.6, 0.2)),
 ]
 
+# Plugin defaults (must match createLayout in PluginProcessor.cpp). Every preset starts from these.
+DEFAULTS = {}
+for i, o in enumerate(OSCS):
+    DEFAULTS.update({f"{o}_on": 1 if i == 0 else 0, f"{o}_wave": 0, f"{o}_oct": 0, f"{o}_semi": 0, f"{o}_fine": 0, f"{o}_vol": 0.7,
+                     f"{o}_pan": 0, f"{o}_voices": 1, f"{o}_detune": 0.2, f"{o}_retrig": 0})
+for pt in "ab":
+    DEFAULTS.update({f"{pt}_type": 0, f"{pt}_slope": 1, f"{pt}_cutoff": 20000, f"{pt}_reso": 0, f"{pt}_drive": 0, f"{pt}_key": 0,
+                     f"{pt}_a": 0.002, f"{pt}_d": 0.3, f"{pt}_s": 1.0, f"{pt}_r": 0.2})
+for n in (1, 2):
+    DEFAULTS.update({f"m{n}_a": 0.001, f"m{n}_d": 0.3, f"m{n}_s": 0.0, f"m{n}_r": 0.3, f"m{n}_amt": 0.0, f"m{n}_target": 0,
+                     f"l{n}_wave": 0, f"l{n}_rate": 1.0, f"l{n}_amt": 0.0, f"l{n}_target": 0})
+for n in (1, 2, 3, 4):
+    DEFAULTS.update({f"mm{n}_src": 0, f"mm{n}_dst": 0, f"mm{n}_amt": 0.0})
+DEFAULTS.update({"mode": 0, "poly": 8, "porta": 0.0, "bend": 2, "master": -6.0,
+    "arp_on": 0, "arp_mode": 0, "arp_rate": 3, "arp_oct": 1, "arp_gate": 0.5, "arp_swing": 0.0, "arp_hold": 0,
+    "dist_on": 0, "dist_type": 0, "dist_amt": 0.3, "dist_mix": 1.0,
+    "ph_on": 0, "ph_rate": 0.3, "ph_depth": 0.6, "ph_fb": 0.4, "ph_mix": 0.5,
+    "ch_on": 0, "ch_rate": 0.6, "ch_depth": 0.4, "ch_delay": 12.0, "ch_mix": 0.4,
+    "eq_on": 0, "eq_low": 0.0, "eq_high": 0.0,
+    "dl_on": 0, "dl_time": 3, "dl_fb": 0.35, "dl_pp": 1, "dl_tone": 6000.0, "dl_mix": 0.25,
+    "rv_on": 0, "rv_size": 0.7, "rv_damp": 0.5, "rv_width": 1.0, "rv_mix": 0.25,
+    "cp_on": 0, "cp_thresh": -12.0, "cp_ratio": 4.0, "cp_att": 5.0, "cp_rel": 120.0, "cp_makeup": 0.0})
+
+def full(values, levels, name):
+    d = dict(DEFAULTS); d.update(values)
+    if name in levels: d["master"] = levels[name]
+    elif "master" not in values: d["master"] = -9.0
+    return d
+
+def write_tsv(path, presets, levels):
+    with open(path, "w") as f:
+        for n, v in presets:
+            d = full(v, levels, n)
+            f.write(n + "\t" + ",".join(f"{k}={float(x):.6g}" for k, x in d.items()) + "\n")
+
 def cpp_string(name, values, levels):
     vals = dict(values)
     if name in levels: vals["master"] = levels[name]
@@ -400,13 +435,19 @@ def main():
     levels = {}
     if len(sys.argv) > 1 and os.path.exists(sys.argv[1]):
         levels = json.load(open(sys.argv[1]))
+    tpath = os.path.join(os.path.dirname(__file__), "tuning.json")
+    if os.path.exists(tpath):
+        tuning = json.load(open(tpath))
+        global PRESETS
+        PRESETS = [(n, {**v, **tuning.get(n, {})}) for n, v in PRESETS]
     names = [n for n, _ in PRESETS]
     assert len(names) == len(set(names)), "duplicate preset names"
     out = ["// Generated by tools/make_presets.py - do not edit by hand.", ""]
     out += [cpp_string(n, v, levels) for n, v in PRESETS]
     path = os.path.join(os.path.dirname(__file__), "..", "Source", "FactoryPresets.inc")
     open(path, "w").write("\n".join(out) + "\n")
-    print(f"wrote {len(PRESETS)} presets to {os.path.normpath(path)}")
+    write_tsv(os.path.join(os.path.dirname(__file__), "presets.tsv"), PRESETS, levels)
+    print(f"wrote {len(PRESETS)} presets to {os.path.normpath(path)} and tools/presets.tsv")
 
 if __name__ == "__main__":
     main()

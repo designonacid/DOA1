@@ -1,0 +1,225 @@
+{
+ "Lead - Supersaw": {
+  "dl_mix": 0.068,
+  "dl_fb": 0.219,
+  "rv_mix": 0.082
+ },
+ "Lead - Uplifting Anthem": {
+  "dl_mix": 0.02,
+  "dl_fb": 0.167,
+  "rv_mix": 0.028
+ },
+ "Lead - Hard Dist": {
+  "dl_mix": 0.056,
+  "dl_fb": 0.183,
+  "rv_mix": 0.045
+ },
+ "Lead - Mono Glide": {
+  "dl_mix": 0.144,
+  "dl_fb": 0.315,
+  "rv_mix": 0.108
+ },
+ "Lead - Fifth Saw": {
+  "dl_mix": 0.13,
+  "dl_fb": 0.27,
+  "rv_mix": 0.13
+ },
+ "Lead - Soft Sine": {
+  "dl_mix": 0.054,
+  "dl_fb": 0.237,
+  "rv_mix": 0.058
+ },
+ "Lead - Detuned Pulse": {
+  "dl_mix": 0.144,
+  "dl_fb": 0.27,
+  "rv_mix": 0.144
+ },
+ "Techno Lead - Afterlife Supersaw": {
+  "dl_mix": 0.004,
+  "dl_fb": 0.113,
+  "rv_mix": 0.004,
+  "m1_amt": 0.85,
+  "m1_s": 0.001,
+  "m1_d": 0.065,
+  "a_cutoff": 235,
+  "b_cutoff": 227
+ },
+ "Techno Lead - Plucky Saw": {
+  "dl_mix": 0.068,
+  "dl_fb": 0.263,
+  "rv_mix": 0.068
+ },
+ "Techno Lead - Analog Mono": {
+  "dl_mix": 0.075,
+  "dl_fb": 0.256,
+  "rv_mix": 0.075
+ },
+ "Techno Lead - Grit Stab": {
+  "dl_mix": 0.049,
+  "dl_fb": 0.197,
+  "rv_mix": 0.04
+ },
+ "Techno Lead - Rave Organ": {
+  "dl_mix": 0.144,
+  "dl_fb": 0.315,
+  "rv_mix": 0.108
+ },
+ "Techno Lead - Hoover": {
+  "rv_mix": 0.049
+ },
+ "Techno Lead - Hypnotic Mono": {
+  "dl_mix": 0.112,
+  "dl_fb": 0.401,
+  "rv_mix": 0.094
+ },
+ "Techno Lead - Peak Time Acid": {
+  "dl_mix": 0.082,
+  "dl_fb": 0.292
+ },
+ "Techno Lead - Cinematic Fifth": {
+  "dl_mix": 0.025,
+  "dl_fb": 0.215,
+  "rv_mix": 0.038
+ },
+ "Techno Lead - Dark Detuned": {
+  "dl_mix": 0.042,
+  "dl_fb": 0.237,
+  "rv_mix": 0.054
+ },
+ "Pluck - Trance": {
+  "dl_mix": 0.145,
+  "dl_fb": 0.324,
+  "rv_mix": 0.104,
+  "m1_amt": 0.76,
+  "m1_s": 0.0,
+  "m1_d": 0.135,
+  "a_cutoff": 217,
+  "b_cutoff": 12282
+ },
+ "Pluck - Bell": {
+  "dl_mix": 0.03,
+  "dl_fb": 0.186,
+  "rv_mix": 0.039
+ },
+ "Pluck - Dark Melodic": {
+  "dl_mix": 0.081,
+  "dl_fb": 0.296,
+  "rv_mix": 0.081,
+  "m1_amt": 0.49,
+  "m1_s": 0.0,
+  "m1_d": 0.255,
+  "b_cutoff": 17000
+ },
+ "Pluck - Short 16th": {
+  "m1_amt": 0.85,
+  "m1_s": 0.0,
+  "m1_d": 0.06,
+  "a_cutoff": 246,
+  "b_cutoff": 2844
+ },
+ "Pluck - Pizzicato": {
+  "m1_amt": 0.85,
+  "m1_s": 0.0,
+  "m1_d": 0.06,
+  "a_cutoff": 356,
+  "b_cutoff": 2844
+ },
+ "Pluck - Koto": {
+  "dl_mix": 0.104,
+  "dl_fb": 0.243,
+  "rv_mix": 0.114,
+  "m1_amt": 0.51,
+  "m1_s": 0.0,
+  "m1_d": 0.123,
+  "a_cutoff": 737,
+  "b_cutoff": 12282
+ },
+ "Pluck - Glass": {
+  "dl_mix": 0.058,
+  "dl_fb": 0.266,
+  "rv_mix": 0.068
+ },
+ "Pad - Warm": {
+  "rv_mix": 0.252
+ },
+ "Pad - Dark": {
+  "rv_mix": 0.207
+ },
+ "Pad - Evolving S&H": {
+  "dl_mix": 0.144,
+  "dl_fb": 0.36,
+  "rv_mix": 0.252
+ },
+ "Pad - Ambient Shimmer": {
+  "dl_mix": 0.112,
+  "dl_fb": 0.401,
+  "rv_mix": 0.205
+ },
+ "Pad - Sweep": {
+  "rv_mix": 0.252
+ },
+ "Bass - Reese": {
+  "a_r": 0.105,
+  "b_r": 0.105
+ },
+ "Bass - Wobble": {
+  "a_r": 0.105,
+  "b_r": 0.105
+ },
+ "Keys - Electric Piano": {
+  "rv_mix": 0.094
+ },
+ "Keys - Organ": {
+  "rv_mix": 0.108
+ },
+ "Keys - House Piano": {
+  "rv_mix": 0.108,
+  "m1_amt": 0.39,
+  "m1_s": 0.036,
+  "m1_d": 0.433,
+  "a_cutoff": 1806,
+  "b_cutoff": 14450
+ },
+ "Keys - Bells": {
+  "dl_mix": 0.027,
+  "dl_fb": 0.197,
+  "rv_mix": 0.038
+ },
+ "Stab - Melodic": {
+  "dl_mix": 0.114,
+  "dl_fb": 0.284,
+  "rv_mix": 0.104
+ },
+ "Stab - Dub Chord": {
+  "dl_mix": 0.149,
+  "dl_fb": 0.437,
+  "rv_mix": 0.112,
+  "m1_amt": 0.85,
+  "m1_s": 0.0,
+  "m1_d": 0.06,
+  "a_cutoff": 224,
+  "b_cutoff": 2844
+ },
+ "Stab - Brass": {
+  "m1_amt": 0.54,
+  "m1_s": 0.18,
+  "m1_d": 0.289,
+  "a_cutoff": 434,
+  "b_cutoff": 14450
+ },
+ "Arp - Trance Gate": {
+  "dl_mix": 0.094,
+  "dl_fb": 0.243,
+  "rv_mix": 0.13
+ },
+ "Arp - Random Bubbles": {
+  "dl_mix": 0.112,
+  "dl_fb": 0.365,
+  "rv_mix": 0.112
+ },
+ "Arp - Melodic Techno Bounce": {
+  "dl_mix": 0.112,
+  "dl_fb": 0.329,
+  "rv_mix": 0.112
+ }
+}
