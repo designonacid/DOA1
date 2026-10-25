@@ -18,7 +18,12 @@ static std::vector<Ev> partFor (const juce::String& name, double sr)
     for (int bar = 0; bar < 2; ++bar)
     {
         const double t0 = bar * 4 * beat;
-        if (cat == "Lead")
+        if (cat == "Techno Lead")
+        {   // hypnotic 8th-note motif, the way these leads are usually played
+            const int mot[2][8] = { { 57, 60, 64, 57, 67, 64, 60, 64 }, { 53, 57, 60, 53, 64, 60, 57, 60 } };
+            for (int e = 0; e < 8; ++e) note (t0 + e * beat * 0.5, beat * 0.32, mot[bar][e] + 12);
+        }
+        else if (cat == "Lead")
         {
             const int mel[2][4] = { { 69, 72, 76, 74 }, { 72, 69, 67, 69 } };
             for (int b = 0; b < 4; ++b) note (t0 + b * beat, beat * 0.9, mel[bar][b]);
@@ -47,6 +52,8 @@ int main()
     juce::AudioBuffer<float> buf (2, block), demo (2, (int) (sr * 120)); demo.clear();
     juce::MidiBuffer midi;
     int demoPos = 0; bool bad = false;
+    juce::AudioBuffer<float> techno (2, (int) (sr * 60)); techno.clear();
+    int technoPos = 0;
     std::map<juce::String, int> perCategory;
     FILE* lv = std::fopen ("levels_measured.json", "w");
     std::fprintf (lv, "{\n");
@@ -92,8 +99,13 @@ int main()
         std::fprintf (lv, "  \"%s\": [%.3f, %.3f, %.3f]%s\n", name.toRawUTF8(), proc.apvts.getRawParameterValue ("master")->load(),
                       rmsDb, 20.0 * std::log10 (peak + 1e-9), pr + 1 < proc.getNumPrograms() ? "," : "");
 
-        // demo: first two presets of each category
+        // demo: first two presets of each category, and every techno lead in its own file
         const auto cat = name.upToFirstOccurrenceOf (" - ", false, false);
+        if (cat == "Techno Lead" && technoPos + total <= techno.getNumSamples())
+        {
+            for (int ch = 0; ch < 2; ++ch) techno.copyFrom (ch, technoPos, out, ch, 0, total);
+            technoPos += total;
+        }
         if (++perCategory[cat] <= 2 && demoPos + total <= demo.getNumSamples())
         {
             for (int ch = 0; ch < 2; ++ch) demo.copyFrom (ch, demoPos, out, ch, 0, total);
@@ -106,6 +118,9 @@ int main()
     auto f = juce::File::getCurrentWorkingDirectory().getChildFile ("halcyon_demo.wav"); f.deleteFile();
     if (auto w = std::unique_ptr<juce::AudioFormatWriter> (wav.createWriterFor (new juce::FileOutputStream (f), sr, 2, 16, {}, 0)))
         w->writeFromAudioSampleBuffer (demo, 0, demoPos);
+    auto f2 = juce::File::getCurrentWorkingDirectory().getChildFile ("halcyon_techno_leads.wav"); f2.deleteFile();
+    if (auto w2 = std::unique_ptr<juce::AudioFormatWriter> (wav.createWriterFor (new juce::FileOutputStream (f2), sr, 2, 16, {}, 0)))
+        w2->writeFromAudioSampleBuffer (techno, 0, technoPos);
 
     proc.setCurrentProgram (1);
     juce::MemoryBlock state; proc.getStateInformation (state);

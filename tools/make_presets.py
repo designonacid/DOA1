@@ -116,6 +116,66 @@ PRESETS = [
       osc("a1", PULSE, voices=6, det=0.3), osc("a2", SAW, oct=-1, voices=2, det=0.1, vol=0.4),
       filt("a", cut=6000, reso=0.15), amps(0.003, 0.4, 0.85, 0.3), phaser(0.25, 0.5, 0.3, 0.3), delay("1/4D", 0.3, 0.2), reverb(0.7, 0.2)),
 
+    # ---------------------------------------------------------------- MODERN TECHNO LEADS
+    # Afterlife-style main lead: big, wide supersaw, plucky filter envelope, slow pitch drift, long space
+    P("Techno Lead - Afterlife Supersaw",
+      osc("a1", voices=8, det=0.4, vol=0.75), osc("a2", voices=6, det=0.3, oct=-1, vol=0.45), osc("b1", SAW, oct=1, voices=4, det=0.35, vol=0.2),
+      filt("a", cut=1400, reso=0.15, key=0.4), filt("b", HP, 12, cut=600), menv(1, 0.001, 0.45, 0.35, 0.4, 0.35, "cut"),
+      amps(0.002, 0.6, 0.75, 0.4), lfo(2, "sine", 0.2, 0.004, "pitch"), mm(1, "vib", "pitch", 0.012), mm(2, "vel", "cutA", 0.2),
+      eq(-2, 2.5), delay("1/8D", 0.45, 0.28, 4500), reverb(0.92, 0.32, 0.55), comp(-16, 3, 8, 150, 2)),
+    # Anyma / Artbat style saw lead: plucky envelope plus LFO pitch modulation
+    P("Techno Lead - Plucky Saw",
+      osc("a1", voices=6, det=0.28), osc("a2", voices=4, det=0.2, semi=12, vol=0.35),
+      filt("a", cut=700, reso=0.25, key=0.5), menv(1, 0.001, 0.3, 0.2, 0.3, 0.45, "cutA"), amp("a", 0.002, 0.5, 0.4, 0.3),
+      lfo(1, "tri", 0.35, 0.006, "pitch"), mm(1, "vel", "cutA", 0.25), mm(2, "wheel", "cutA", 0.3),
+      delay("1/8D", 0.4, 0.25, 4000), reverb(0.85, 0.25), comp(-14, 3, 6, 120, 2)),
+    # Bodzin / Boehmer analog mono lead-bass pluck
+    P("Techno Lead - Analog Mono",
+      glob(mode=2, porta=0.07), osc("a1", vol=0.7), osc("a2", PULSE, fine=-6, vol=0.5), osc("b1", SINE, oct=-1, vol=0.4),
+      filt("a", cut=350, reso=0.4, drive=0.3, key=0.5), menv(1, 0.001, 0.35, 0.15, 0.3, 0.45, "cutA"), amps(0.002, 0.4, 0.85, 0.15),
+      mm(1, "vel", "cutA", 0.3), mm(2, "vib", "pitch", 0.012), lfo(1, "sine", 5.0, 0.0),
+      delay("1/4D", 0.35, 0.2, 3000), reverb(0.75, 0.2)),
+    # FM-style grit approximated with a wavefolder, slight detune, high-mid boost
+    P("Techno Lead - Grit Stab",
+      osc("a1", voices=3, det=0.12), osc("a2", PULSE, oct=1, voices=2, det=0.08, vol=0.4),
+      filt("a", cut=1600, reso=0.3, drive=0.35), menv(1, 0.001, 0.18, 0.1, 0.2, 0.35, "cutA"), amp("a", 0.001, 0.3, 0.2, 0.2),
+      dist(2, 0.4, 0.55), eq(-1, 4), delay("1/8D", 0.3, 0.18), reverb(0.6, 0.15), comp(-18, 4, 3, 90, 3)),
+    # Old-school rave lead layered with an organ (peak-time / Charlotte de Witte direction)
+    P("Techno Lead - Rave Organ",
+      osc("a1", voices=3, det=0.15, vol=0.55), osc("a2", PULSE, oct=1, vol=0.3),
+      osc("b1", SINE, vol=0.5), osc("b2", SINE, oct=1, semi=7, vol=0.25),
+      filt("a", cut=2500, reso=0.2), menv(1, 0.001, 0.2, 0.3, 0.2, 0.25, "cutA"), amps(0.002, 0.3, 0.7, 0.15),
+      dist(0, 0.35, 0.5), chorus(4.5, 0.15, 7, 0.35), delay("1/8D", 0.35, 0.2), reverb(0.55, 0.15)),
+    # Hoover comeback: heavily detuned pulse/saw, scoop up into the note, mono glide
+    P("Techno Lead - Hoover",
+      glob(mode=2, porta=0.1), osc("a1", PULSE, voices=8, det=0.55, vol=0.7), osc("a2", SAW, oct=-1, voices=6, det=0.45, vol=0.5),
+      filt("a", cut=4000, reso=0.1), menv(1, 0.001, 0.12, 0, 0.1, -0.08, "pitch"), amps(0.002, 0.5, 0.9, 0.3),
+      chorus(0.9, 0.7, 9, 0.5), dist(0, 0.2, 0.4), reverb(0.7, 0.18)),
+    # Hypnotic mono line: narrow band-pass that slowly breathes; works best on short repeating patterns
+    P("Techno Lead - Hypnotic Mono",
+      glob(mode=1), osc("a1", vol=0.7), osc("a2", PULSE, oct=-1, vol=0.35),
+      filt("a", BP, 12, cut=900, reso=0.55, drive=0.2), lfo(1, "sine", 0.07, 0.25, "cutA"), menv(1, 0.001, 0.15, 0, 0.1, 0.25, "cutA"),
+      amp("a", 0.001, 0.25, 0.2, 0.08), mm(1, "rand", "cutA", 0.06),
+      delay("1/8D", 0.55, 0.3, 2500), reverb(0.8, 0.25, 0.7)),
+    # Peak-time acid: screaming resonance, hard clip, dotted echoes
+    P("Techno Lead - Peak Time Acid",
+      glob(mode=2, porta=0.05), osc("a1", vol=0.8), osc("a2", PULSE, vol=0.3),
+      filt("a", cut=450, reso=0.85, drive=0.55, key=0.3), menv(1, 0.001, 0.2, 0.05, 0.15, 0.6, "cutA"), amp("a", 0.002, 0.3, 1.0, 0.06),
+      lfo(1, "tri", 0.12, 0.12, "cutA"), mm(1, "vel", "cutA", 0.3), mm(2, "wheel", "reso", 0.15),
+      dist(1, 0.4, 0.5), delay("1/8D", 0.4, 0.22, 3000), comp(-18, 4, 3, 80, 3)),
+    # Cinematic fifth: lead doubled a perfect fifth up, very wide and washed
+    P("Techno Lead - Cinematic Fifth",
+      osc("a1", voices=6, det=0.3), osc("a2", semi=7, voices=6, det=0.3, vol=0.5), osc("b1", TRI, oct=1, vol=0.25),
+      filt("a", cut=2200, reso=0.15, key=0.4), menv(1, 0.001, 0.6, 0.5, 0.5, 0.25, "cutA"), amps(0.01, 0.8, 0.8, 0.6),
+      mm(1, "vib", "pitch", 0.01), lfo(1, "sine", 4.8, 0.0), mm(2, "at", "cutA", 0.25),
+      chorus(0.3, 0.35, 14, 0.3), delay("1/4D", 0.45, 0.25, 4500), reverb(0.95, 0.38, 0.5)),
+    # Dark detuned: low-register detuned saws, slow filter drift, saturated
+    P("Techno Lead - Dark Detuned",
+      osc("a1", oct=-1, voices=5, det=0.35), osc("a2", voices=3, det=0.25, fine=-10, vol=0.5),
+      filt("a", cut=900, reso=0.35, drive=0.45), lfo(1, "tri", 0.09, 0.2, "cutA"), menv(1, 0.001, 0.4, 0.3, 0.3, 0.25, "cutA"),
+      amp("a", 0.003, 0.5, 0.8, 0.3), mm(1, "wheel", "drive", 0.4),
+      dist(0, 0.3, 0.5), delay("1/8D", 0.4, 0.22, 2500), reverb(0.85, 0.28, 0.75)),
+
     # ---------------------------------------------------------------- PLUCKS
     P("Pluck - Trance",
       osc("a1", voices=6, det=0.25), osc("a2", PULSE, oct=1, voices=2, det=0.1, vol=0.4),

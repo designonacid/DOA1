@@ -38,10 +38,11 @@ An original subtractive polysynth built with JUCE. Stages 1–3: core synth, eff
 
 Worst case (16 voices x 4 oscillators x 8 unison = 512 oscillators) uses about 25% of one CPU core; the full effects rack adds about 4%.
 
-## Factory presets (63)
+## Factory presets (73)
 
 - **General** (1): Init
 - **Lead** (11): Supersaw, Uplifting Anthem, Hard Dist, Mono Glide, Square Retro, Fifth Saw, Soft Sine, Acid Squelch, Psy Screamer, Chiptune, Detuned Pulse
+- **Techno Lead** (10): Afterlife Supersaw, Plucky Saw, Analog Mono, Grit Stab, Rave Organ, Hoover, Hypnotic Mono, Peak Time Acid, Cinematic Fifth, Dark Detuned
 - **Pluck** (9): Trance, Bell, Dark Melodic, Short 16th, Pizzicato, Koto, House Chord, Glass, Marimba
 - **Pad** (9): Warm, Dark, Strings, Choir, Evolving S&H, Ambient Shimmer, Sweep, Pulse Phase, Lush Poly
 - **Bass** (10): Reese, Sub, Rolling Psy, Trance Offbeat, Acid 303, Melodic Techno, Wobble, Pluck, Growl, Deep House
@@ -49,7 +50,6 @@ Worst case (16 voices x 4 oscillators x 8 unison = 512 oscillators) uses about 2
 - **Stab** (5): Melodic, Rave Hoover, Dub Chord, Brass, Detroit
 - **Arp** (7): Melodic Sequence, Trance Gate, Random Bubbles, Pulse Chords, Octave Bass, Psy Triplet, Melodic Techno Bounce
 - **FX** (6): Noise Riser, Downlifter, Impact, Wind, Laser Zap, Alarm
-
 All presets are level-matched: a measurement pass renders each one with a part that suits its
 category, then `tools/make_presets.py tools/levels.json` sets the master volume so they play at a
 similar loudness (transient-heavy sounds are capped by their peak instead). Presets live in
