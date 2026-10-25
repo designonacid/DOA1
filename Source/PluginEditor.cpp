@@ -139,9 +139,9 @@ Control::Control (APVTS& s, const juce::String& id, const juce::String& text, Ki
 void Control::resized()
 {
     auto r = getLocalBounds();
-    if (kind == ToggleKind) { toggle.setBounds (r.withSizeKeepingCentre (juce::jmin (r.getWidth() - 4, 52), 26)); return; }
+    if (kind == ToggleKind) { toggle.setBounds (r.withSizeKeepingCentre (juce::jmin (r.getWidth() - 4, 84), 26)); return; }
     label.setBounds (r.removeFromTop (16));
-    if (kind == KnobKind) slider.setBounds (r);
+    if (kind == KnobKind) slider.setBounds (r.withSizeKeepingCentre (juce::jmin (r.getWidth(), 84), juce::jmin (r.getHeight(), 92)));
     else box.setBounds (r.withSizeKeepingCentre (r.getWidth() - 4, 26).translated (0, -6));
 }
 
@@ -240,6 +240,44 @@ HalcyonEditor::HalcyonEditor (HalcyonProcessor& p)
 
     for (auto* pn : panels) addAndMakeVisible (pn);
 
+    // ---- FX page ----
+    const juce::Colour fxTint { 0xff6be3a5 };
+    {
+        auto* d = fxPanels.add (new Panel ("DISTORTION", fxTint));
+        d->add (toggle ("dist_on", "On", fxTint), 0.9f); d->add (choice ("dist_type", "Type", fxTint), 1.5f);
+        d->add (knob ("dist_amt", "Amount", fxTint)); d->add (knob ("dist_mix", "Mix", fxTint));
+        auto* ph = fxPanels.add (new Panel ("PHASER", fxTint));
+        ph->add (toggle ("ph_on", "On", fxTint), 0.9f);
+        for (auto [id, l] : { std::pair { "ph_rate", "Rate" }, { "ph_depth", "Depth" }, { "ph_fb", "Feedback" }, { "ph_mix", "Mix" } }) ph->add (knob (id, l, fxTint));
+        auto* ch = fxPanels.add (new Panel ("CHORUS", fxTint));
+        ch->add (toggle ("ch_on", "On", fxTint), 0.9f);
+        for (auto [id, l] : { std::pair { "ch_rate", "Rate" }, { "ch_depth", "Depth" }, { "ch_delay", "Delay" }, { "ch_mix", "Mix" } }) ch->add (knob (id, l, fxTint));
+        auto* e = fxPanels.add (new Panel ("EQ", fxTint));
+        e->add (toggle ("eq_on", "On", fxTint), 0.9f); e->add (knob ("eq_low", "Bass", fxTint)); e->add (knob ("eq_high", "Treble", fxTint));
+        auto* dl = fxPanels.add (new Panel ("DELAY", fxTint));
+        dl->add (toggle ("dl_on", "On", fxTint), 0.9f); dl->add (choice ("dl_time", "Time", fxTint), 1.4f);
+        dl->add (knob ("dl_fb", "Feedback", fxTint)); dl->add (toggle ("dl_pp", "Ping-Pong", fxTint), 1.3f);
+        dl->add (knob ("dl_tone", "Tone", fxTint)); dl->add (knob ("dl_mix", "Mix", fxTint));
+        auto* rv = fxPanels.add (new Panel ("REVERB", fxTint));
+        rv->add (toggle ("rv_on", "On", fxTint), 0.9f);
+        for (auto [id, l] : { std::pair { "rv_size", "Size" }, { "rv_damp", "Damp" }, { "rv_width", "Width" }, { "rv_mix", "Mix" } }) rv->add (knob (id, l, fxTint));
+        auto* cp = fxPanels.add (new Panel ("COMPRESSOR", fxTint));
+        cp->add (toggle ("cp_on", "On", fxTint), 0.9f);
+        for (auto [id, l] : { std::pair { "cp_thresh", "Thresh" }, { "cp_ratio", "Ratio" }, { "cp_att", "Attack" }, { "cp_rel", "Release" }, { "cp_makeup", "Makeup" } })
+            cp->add (knob (id, l, fxTint));
+    }
+    for (auto* pn : fxPanels) addChildComponent (pn);
+
+    for (auto* b : { &synthTab, &fxTab })
+    {
+        b->setRadioGroupId (7);
+        b->setClickingTogglesState (true);
+        addAndMakeVisible (b);
+    }
+    synthTab.setToggleState (true, juce::dontSendNotification);
+    synthTab.onClick = [this] { if (synthTab.getToggleState()) showPage (false); };
+    fxTab.onClick    = [this] { if (fxTab.getToggleState()) showPage (true); };
+
     for (int i = 0; i < proc.getNumPrograms(); ++i) presetBox.addItem (proc.getProgramName (i), i + 1);
     presetBox.setSelectedId (proc.getCurrentProgram() + 1, juce::dontSendNotification);
     presetBox.onChange = [this] { proc.setCurrentProgram (presetBox.getSelectedId() - 1); };
@@ -257,6 +295,14 @@ HalcyonEditor::HalcyonEditor (HalcyonProcessor& p)
 
     setSize (1240, 760);
     startTimerHz (10);
+}
+
+void HalcyonEditor::showPage (bool fx)
+{
+    for (auto* pn : panels)   pn->setVisible (! fx);
+    for (auto* pn : fxPanels) pn->setVisible (fx);
+    synthTab.setToggleState (! fx, juce::dontSendNotification);
+    fxTab.setToggleState (fx, juce::dontSendNotification);
 }
 
 HalcyonEditor::~HalcyonEditor() { stopTimer(); setLookAndFeel (nullptr); }
@@ -286,12 +332,32 @@ void HalcyonEditor::resized()
     auto header = r.removeFromTop (44);
     presetBox.setBounds (header.removeFromRight (240).reduced (0, 8));
     voiceLabel.setBounds (header.removeFromRight (120).reduced (8, 8));
+    {
+        auto tabs = header.withTrimmedLeft (340).removeFromLeft (180).reduced (0, 8);
+        synthTab.setBounds (tabs.removeFromLeft (90));
+        fxTab.setBounds (tabs.removeFromLeft (80));
+    }
     r.removeFromTop (6);
 
     keyboard.setBounds (r.removeFromBottom (72));
     keyboard.setKeyWidth (keyboard.getWidth() / 36.0f);   // 36 white keys fill the width
     r.removeFromBottom (8);
     const int gap = 8, rowH = 112;
+
+    // ---- FX page: three rows ----
+    {
+        auto fxArea = r;
+        const int fxRowH = (fxArea.getHeight() - gap * 2) / 3;
+        auto layoutRow = [&] (juce::Rectangle<int> row, std::initializer_list<std::pair<int, float>> items)
+        {
+            float total = 0; for (auto& it : items) total += it.second;
+            const float avail = (float) (row.getWidth() - gap * ((int) items.size() - 1));
+            for (auto& it : items) { fxPanels[it.first]->setBounds (row.removeFromLeft (juce::roundToInt (avail * it.second / total))); row.removeFromLeft (gap); }
+        };
+        layoutRow (fxArea.removeFromTop (fxRowH), { { 0, 4.4f }, { 1, 4.9f }, { 2, 4.9f } }); fxArea.removeFromTop (gap);
+        layoutRow (fxArea.removeFromTop (fxRowH), { { 3, 3.0f }, { 4, 7.0f } });              fxArea.removeFromTop (gap);
+        layoutRow (fxArea, { { 5, 4.9f }, { 6, 5.9f } });
+    }
 
     auto partsArea = r.removeFromTop (rowH * 3 + gap * 2);
     const int colW = (partsArea.getWidth() - gap) / 2;

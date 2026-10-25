@@ -28,20 +28,26 @@ namespace
                 { "b1_on", 1 }, { "b1_oct", -1 }, { "b1_voices", 4 }, { "b1_detune", 0.25f }, { "b1_vol", 0.45f },
                 { "a_cutoff", 9000 }, { "a_reso", 0.1f }, { "b_cutoff", 6000 },
                 { "a_d", 0.5f }, { "a_s", 0.85f }, { "a_r", 0.35f }, { "b_d", 0.5f }, { "b_s", 0.85f }, { "b_r", 0.35f },
-                { "master", -10 } } },
+                { "dl_on", 1 }, { "dl_time", 6 }, { "dl_fb", 0.3f }, { "dl_mix", 0.18f }, { "dl_tone", 5000 },
+                { "rv_on", 1 }, { "rv_size", 0.8f }, { "rv_mix", 0.22f },
+                { "master", -11.5f } } },
             { "Pluck - Trance", {
                 { "a1_voices", 6 }, { "a1_detune", 0.25f },
                 { "a2_on", 1 }, { "a2_wave", 1 }, { "a2_oct", 1 }, { "a2_voices", 2 }, { "a2_detune", 0.1f }, { "a2_vol", 0.4f },
                 { "a_cutoff", 300 }, { "a_reso", 0.25f }, { "a_key", 0.5f },
                 { "m1_a", 0.001f }, { "m1_d", 0.22f }, { "m1_s", 0 }, { "m1_r", 0.2f }, { "m1_amt", 0.55f }, { "m1_target", 1 },
-                { "a_d", 0.45f }, { "a_s", 0 }, { "a_r", 0.3f }, { "master", -8 } } },
+                { "a_d", 0.45f }, { "a_s", 0 }, { "a_r", 0.3f },
+                { "dl_on", 1 }, { "dl_time", 3 }, { "dl_fb", 0.4f }, { "dl_mix", 0.28f }, { "dl_tone", 4000 },
+                { "rv_on", 1 }, { "rv_size", 0.75f }, { "rv_mix", 0.2f }, { "master", -8 } } },
             { "Pad - Warm", {
                 { "a1_voices", 8 }, { "a1_detune", 0.25f },
                 { "a2_on", 1 }, { "a2_wave", 1 }, { "a2_oct", -1 }, { "a2_voices", 4 }, { "a2_detune", 0.2f }, { "a2_vol", 0.5f },
                 { "b1_on", 1 }, { "b1_wave", 2 }, { "b1_vol", 0.5f },
                 { "a_cutoff", 1800 }, { "a_reso", 0.2f }, { "b_cutoff", 2500 }, { "b_slope", 0 },
                 { "a_a", 1.2f }, { "a_d", 1.0f }, { "a_s", 0.9f }, { "a_r", 2.5f }, { "b_a", 1.2f }, { "b_d", 1.0f }, { "b_s", 0.9f }, { "b_r", 2.5f },
-                { "l1_wave", 0 }, { "l1_rate", 0.15f }, { "l1_amt", 0.12f }, { "l1_target", 3 }, { "master", -12 } } },
+                { "l1_wave", 0 }, { "l1_rate", 0.15f }, { "l1_amt", 0.12f }, { "l1_target", 3 },
+                { "ch_on", 1 }, { "ch_rate", 0.4f }, { "ch_depth", 0.5f }, { "ch_mix", 0.45f },
+                { "rv_on", 1 }, { "rv_size", 0.92f }, { "rv_damp", 0.6f }, { "rv_mix", 0.35f }, { "master", -13.5f } } },
             { "Bass - Reese", {
                 { "mode", 1 }, { "porta", 0.05f },
                 { "a1_oct", -2 }, { "a1_voices", 2 }, { "a1_detune", 0.12f },
@@ -49,7 +55,9 @@ namespace
                 { "b1_on", 1 }, { "b1_wave", 3 }, { "b1_oct", -3 }, { "b1_vol", 0.6f },
                 { "a_cutoff", 700 }, { "a_reso", 0.15f }, { "a_drive", 0.4f },
                 { "a_s", 1 }, { "a_r", 0.15f }, { "b_s", 1 }, { "b_r", 0.15f },
-                { "l1_wave", 1 }, { "l1_rate", 0.25f }, { "l1_amt", 0.08f }, { "l1_target", 1 }, { "master", -8 } } },
+                { "l1_wave", 1 }, { "l1_rate", 0.25f }, { "l1_amt", 0.08f }, { "l1_target", 1 },
+                { "dist_on", 1 }, { "dist_amt", 0.35f }, { "dist_mix", 0.6f },
+                { "cp_on", 1 }, { "cp_thresh", -18 }, { "cp_ratio", 4 }, { "cp_makeup", 4 }, { "master", -8 } } },
             { "Stab - Melodic", {
                 { "a1_voices", 4 }, { "a1_detune", 0.2f },
                 { "a2_on", 1 }, { "a2_semi", 7 }, { "a2_voices", 4 }, { "a2_detune", 0.2f }, { "a2_vol", 0.6f },
@@ -57,7 +65,9 @@ namespace
                 { "a_cutoff", 900 }, { "a_reso", 0.35f }, { "b_cutoff", 1500 },
                 { "m1_d", 0.35f }, { "m1_s", 0.1f }, { "m1_amt", 0.45f }, { "m1_target", 3 },
                 { "a_d", 0.6f }, { "a_s", 0.2f }, { "a_r", 0.4f }, { "b_d", 0.6f }, { "b_s", 0.2f }, { "b_r", 0.4f },
-                { "master", -10 } } },
+                { "dl_on", 1 }, { "dl_time", 2 }, { "dl_fb", 0.35f }, { "dl_mix", 0.22f },
+                { "ph_on", 1 }, { "ph_rate", 0.15f }, { "ph_mix", 0.35f },
+                { "rv_on", 1 }, { "rv_size", 0.7f }, { "rv_mix", 0.2f }, { "master", -10 } } },
         };
         return list;
     }
@@ -129,6 +139,49 @@ APVTS::ParameterLayout HalcyonProcessor::createLayout()
     addF ("porta", "Portamento", { 0.0f, 1.0f, 0.0f, 0.5f }, 0.0f, secText);
     addF ("bend", "Bend Range", { 0.0f, 24.0f, 1.0f }, 2.0f, nullptr, "st");
     addF ("master", "Master", { -36.0f, 6.0f, 0.1f }, -6.0f, nullptr, "dB");
+
+    // ---- effects ----
+    addB ("dist_on", "Distortion On", false);
+    addC ("dist_type", "Distortion Type", { "Soft", "Hard", "Fold", "Crush" }, 0);
+    addF ("dist_amt", "Distortion Amount", { 0.0f, 1.0f }, 0.3f, pctText);
+    addF ("dist_mix", "Distortion Mix", { 0.0f, 1.0f }, 1.0f, pctText);
+
+    addB ("ph_on", "Phaser On", false);
+    addF ("ph_rate", "Phaser Rate", { 0.02f, 10.0f, 0.0f, 0.35f }, 0.3f, [] (float v, int) { return String (v, 2) + " Hz"; });
+    addF ("ph_depth", "Phaser Depth", { 0.0f, 1.0f }, 0.6f, pctText);
+    addF ("ph_fb", "Phaser Feedback", { 0.0f, 0.9f }, 0.4f, pctText);
+    addF ("ph_mix", "Phaser Mix", { 0.0f, 1.0f }, 0.5f, pctText);
+
+    addB ("ch_on", "Chorus On", false);
+    addF ("ch_rate", "Chorus Rate", { 0.02f, 5.0f, 0.0f, 0.4f }, 0.6f, [] (float v, int) { return String (v, 2) + " Hz"; });
+    addF ("ch_depth", "Chorus Depth", { 0.0f, 1.0f }, 0.4f, pctText);
+    addF ("ch_delay", "Chorus Delay", { 5.0f, 30.0f, 0.1f }, 12.0f, [] (float v, int) { return v < 10.0f ? String (v, 1) + " ms" : String (roundToInt (v)) + " ms"; });
+    addF ("ch_mix", "Chorus Mix", { 0.0f, 1.0f }, 0.4f, pctText);
+
+    addB ("eq_on", "EQ On", false);
+    addF ("eq_low", "EQ Bass", { -15.0f, 15.0f, 0.1f }, 0.0f, nullptr, "dB");
+    addF ("eq_high", "EQ Treble", { -15.0f, 15.0f, 0.1f }, 0.0f, nullptr, "dB");
+
+    StringArray delayTimes; for (auto* nm : halcyon::kDelayNames) delayTimes.add (nm);
+    addB ("dl_on", "Delay On", false);
+    addC ("dl_time", "Delay Time", delayTimes, 3);
+    addF ("dl_fb", "Delay Feedback", { 0.0f, 0.95f }, 0.35f, pctText);
+    addB ("dl_pp", "Delay Ping-Pong", true);
+    addF ("dl_tone", "Delay Tone", { 500.0f, 20000.0f, 0.0f, 0.3f }, 6000.0f, hzText, "Hz");
+    addF ("dl_mix", "Delay Mix", { 0.0f, 1.0f }, 0.25f, pctText);
+
+    addB ("rv_on", "Reverb On", false);
+    addF ("rv_size", "Reverb Size", { 0.0f, 1.0f }, 0.7f, pctText);
+    addF ("rv_damp", "Reverb Damping", { 0.0f, 1.0f }, 0.5f, pctText);
+    addF ("rv_width", "Reverb Width", { 0.0f, 1.0f }, 1.0f, pctText);
+    addF ("rv_mix", "Reverb Mix", { 0.0f, 1.0f }, 0.25f, pctText);
+
+    addB ("cp_on", "Compressor On", false);
+    addF ("cp_thresh", "Comp Threshold", { -40.0f, 0.0f, 0.1f }, -12.0f, nullptr, "dB");
+    addF ("cp_ratio", "Comp Ratio", { 1.0f, 20.0f, 0.1f, 0.5f }, 4.0f, [] (float v, int) { return String (v, 1) + ":1"; });
+    addF ("cp_att", "Comp Attack", { 0.1f, 100.0f, 0.0f, 0.4f }, 5.0f, [] (float v, int) { return v < 10.0f ? String (v, 1) + " ms" : String (roundToInt (v)) + " ms"; });
+    addF ("cp_rel", "Comp Release", { 10.0f, 1000.0f, 0.0f, 0.4f }, 120.0f, [] (float v, int) { return v < 10.0f ? String (v, 1) + " ms" : String (roundToInt (v)) + " ms"; });
+    addF ("cp_makeup", "Comp Makeup", { 0.0f, 24.0f, 0.1f }, 0.0f, nullptr, "dB");
     return l;
 }
 
@@ -171,9 +224,25 @@ halcyon::Params HalcyonProcessor::readParams() const
     return p;
 }
 
+halcyon::FxParams HalcyonProcessor::readFxParams() const
+{
+    halcyon::FxParams f;
+    f.distOn = v ("dist_on") > 0.5f; f.distType = (int) v ("dist_type"); f.distAmount = v ("dist_amt"); f.distMix = v ("dist_mix");
+    f.phOn = v ("ph_on") > 0.5f; f.phRate = v ("ph_rate"); f.phDepth = v ("ph_depth"); f.phFeedback = v ("ph_fb"); f.phMix = v ("ph_mix");
+    f.chOn = v ("ch_on") > 0.5f; f.chRate = v ("ch_rate"); f.chDepth = v ("ch_depth"); f.chDelayMs = v ("ch_delay"); f.chMix = v ("ch_mix");
+    f.eqOn = v ("eq_on") > 0.5f; f.eqLowDb = v ("eq_low"); f.eqHighDb = v ("eq_high");
+    f.dlOn = v ("dl_on") > 0.5f; f.dlTime = (int) v ("dl_time"); f.dlFeedback = v ("dl_fb"); f.dlPingPong = v ("dl_pp") > 0.5f;
+    f.dlToneHz = v ("dl_tone"); f.dlMix = v ("dl_mix");
+    f.rvOn = v ("rv_on") > 0.5f; f.rvSize = v ("rv_size"); f.rvDamp = v ("rv_damp"); f.rvWidth = v ("rv_width"); f.rvMix = v ("rv_mix");
+    f.cpOn = v ("cp_on") > 0.5f; f.cpThreshDb = v ("cp_thresh"); f.cpRatio = v ("cp_ratio"); f.cpAttackMs = v ("cp_att");
+    f.cpReleaseMs = v ("cp_rel"); f.cpMakeupDb = v ("cp_makeup");
+    return f;
+}
+
 void HalcyonProcessor::prepareToPlay (double sampleRate, int)
 {
     engine.prepare (sampleRate);
+    fxChain.prepare (sampleRate);
     keyboardState.reset();
 }
 
@@ -204,6 +273,12 @@ void HalcyonProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& mid
     }
     if (pos < buffer.getNumSamples()) engine.render (L + pos, R + pos, buffer.getNumSamples() - pos);
     activeVoices = engine.activeVoiceCount();
+
+    double bpm = 128.0;
+    if (auto* ph = getPlayHead())
+        if (auto position = ph->getPosition())
+            if (auto hostBpm = position->getBpm()) bpm = *hostBpm;
+    fxChain.process (L, R, buffer.getNumSamples(), readFxParams(), bpm);
 }
 
 //==============================================================================

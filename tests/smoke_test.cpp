@@ -86,10 +86,18 @@ int main()
     proc.setStateInformation (state.getData(), (int) state.getSize());
     std::printf ("STATE: a1 voices restored to %.0f (expect 8)\n", proc.apvts.getRawParameterValue ("a1_voices")->load());
 
+    proc.setCurrentProgram (2);
     std::unique_ptr<juce::AudioProcessorEditor> ed (proc.createEditor());
     auto img = ed->createComponentSnapshot (ed->getLocalBounds(), true, 1.5f);
     auto pf = juce::File::getCurrentWorkingDirectory().getChildFile ("halcyon_ui.png"); pf.deleteFile();
     juce::FileOutputStream os (pf); juce::PNGImageFormat().writeImageToStream (img, os);
+    if (auto* he = dynamic_cast<HalcyonEditor*> (ed.get()))
+    {
+        he->showPage (true);
+        auto img2 = ed->createComponentSnapshot (ed->getLocalBounds(), true, 1.5f);
+        auto pf2 = juce::File::getCurrentWorkingDirectory().getChildFile ("halcyon_fx.png"); pf2.deleteFile();
+        juce::FileOutputStream os2 (pf2); juce::PNGImageFormat().writeImageToStream (img2, os2);
+    }
     std::printf ("UI: %dx%d\n", ed->getWidth(), ed->getHeight());
     ed.reset();
     return bad ? 1 : 0;
