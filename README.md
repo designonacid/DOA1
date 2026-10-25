@@ -38,7 +38,7 @@ An original subtractive polysynth built with JUCE. Stages 1–3: core synth, eff
 
 Worst case (16 voices x 4 oscillators x 8 unison = 512 oscillators) uses about 25% of one CPU core; the full effects rack adds about 4%.
 
-## Factory presets (73)
+## Factory presets (108)
 
 - **General** (1): Init
 - **Lead** (11): Supersaw, Uplifting Anthem, Hard Dist, Mono Glide, Square Retro, Fifth Saw, Soft Sine, Acid Squelch, Psy Screamer, Chiptune, Detuned Pulse
@@ -50,6 +50,18 @@ Worst case (16 voices x 4 oscillators x 8 unison = 512 oscillators) uses about 2
 - **Stab** (5): Melodic, Rave Hoover, Dub Chord, Brass, Detroit
 - **Arp** (7): Melodic Sequence, Trance Gate, Random Bubbles, Pulse Chords, Octave Bass, Psy Triplet, Melodic Techno Bounce
 - **FX** (6): Noise Riser, Downlifter, Impact, Wind, Laser Zap, Alarm
+- **Trance Lead** (5): Euphoric Supersaw, Tech Trance Saw, Psy Squeal, Vocal Formant, Progressive Pulse
+- **Trance Pluck** (4): Gated Supersaw, Uplifting Bright, Progressive Dark, Psy Zap
+- **Trance Bass** (2): Tech Rumble, Progressive Round
+- **Trance Pad** (3): Breakdown Supersaw, Airy, Uplifting Strings
+- **Trance Arp** (4): Uplifting Gate, Psy Acid 16th, Progressive Rolling, Triplet Sparkle
+- **Trance FX** (2): Uplifter Sweep, Noise Build
+- **Techno Bass** (4): Acid Rolling, Hollow, Industrial Distorted, Minimal Pluck
+- **Techno Stab** (4): Dub Chord, Rave Chord, Industrial Metal, Minimal Blip
+- **Techno Pad** (2): Dark Drone, Industrial Texture
+- **Techno Arp** (2): Hypnotic Sequence, Polymetric Triplets
+- **Techno FX** (3): Industrial Sweep, Siren, Acid Riser
+
 ### How the presets are made and checked
 Presets are written in `tools/make_presets.py`. `tools/preset_lab.cpp` renders each one with the real
 engine, effects and arpeggiator (no JUCE needed), playing a part that suits its category (melodies with

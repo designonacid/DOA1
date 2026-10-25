@@ -221,5 +221,77 @@
   "dl_mix": 0.112,
   "dl_fb": 0.329,
   "rv_mix": 0.112
+ },
+ "Trance Lead - Euphoric Supersaw": {
+  "dl_mix": 0.038,
+  "dl_fb": 0.197,
+  "rv_mix": 0.038
+ },
+ "Trance Lead - Vocal Formant": {
+  "dl_mix": 0.086,
+  "dl_fb": 0.27,
+  "rv_mix": 0.086
+ },
+ "Trance Lead - Progressive Pulse": {
+  "dl_mix": 0.108,
+  "dl_fb": 0.315,
+  "rv_mix": 0.094
+ },
+ "Trance Pluck - Uplifting Bright": {
+  "dl_mix": 0.115,
+  "dl_fb": 0.315,
+  "rv_mix": 0.086
+ },
+ "Trance Pluck - Progressive Dark": {
+  "dl_mix": 0.108,
+  "dl_fb": 0.36,
+  "rv_mix": 0.086,
+  "m1_amt": 0.57,
+  "m1_s": 0.0,
+  "m1_d": 0.17,
+  "a_cutoff": 255,
+  "b_cutoff": 17000
+ },
+ "Trance Pluck - Psy Zap": {
+  "m1_amt": 0.71,
+  "m1_s": 0.0,
+  "m1_d": 0.06,
+  "a_cutoff": 983,
+  "b_cutoff": 12282
+ },
+ "Trance Pad - Breakdown Supersaw": {
+  "rv_mix": 0.216
+ },
+ "Trance Pad - Airy": {
+  "rv_mix": 0.252
+ },
+ "Trance Arp - Triplet Sparkle": {
+  "dl_mix": 0.083,
+  "dl_fb": 0.324,
+  "rv_mix": 0.083
+ },
+ "Techno Bass - Industrial Distorted": {
+  "a_r": 0.02,
+  "b_r": 0.02
+ },
+ "Techno Stab - Dub Chord": {
+  "dl_mix": 0.13,
+  "dl_fb": 0.405,
+  "rv_mix": 0.086,
+  "m1_amt": 0.85,
+  "m1_s": 0.0,
+  "m1_d": 0.06,
+  "a_cutoff": 231,
+  "b_cutoff": 231
+ },
+ "Techno Stab - Industrial Metal": {
+  "m1_amt": 0.85,
+  "m1_s": 0.0,
+  "m1_d": 0.06,
+  "a_cutoff": 256,
+  "b_cutoff": 570
+ },
+ "Techno Pad - Dark Drone": {
+  "rv_mix": 0.156
  }
 }

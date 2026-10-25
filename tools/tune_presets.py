@@ -19,7 +19,11 @@ PLUCK_MAX = {"Pluck": 0.55, "Stab": 0.65}
 PLUCKY_LEADS = {"Techno Lead - Plucky Saw", "Techno Lead - Analog Mono", "Techno Lead - Grit Stab", "Techno Lead - Afterlife Supersaw",
                 "Lead - Acid Squelch", "Techno Lead - Peak Time Acid", "Keys - House Piano", "Keys - Clav"}
 
-def cat(n): return n.split(" - ")[0] if " - " in n else "General"
+def cat(n):
+    """Sound type used for targets: last word of the category ("Trance Bass" -> "Bass")."""
+    c = n.split(" - ")[0] if " - " in n else "General"
+    if c == "Techno Lead": return c
+    return c.split()[-1]
 
 def run(presets, levels):
     mp.write_tsv("/tmp/tune.tsv", presets, levels)

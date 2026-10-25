@@ -29,8 +29,12 @@ static std::string category (const std::string& name)
 }
 
 // A musical part per category: what a producer would actually play with this kind of sound.
-static Part partFor (const std::string& cat)
+static Part partFor (const std::string& category)
 {
+    // "Trance Bass" -> Bass, "Techno Stab" -> Stab; techno/trance leads play the hypnotic motif
+    const auto sp = category.rfind (' ');
+    std::string cat = sp == std::string::npos ? category : category.substr (sp + 1);
+    if (cat == "Lead" && category != "Lead") cat = "Techno Lead";
     Part p; p.length = 8 * BEAT; p.sustained = false;
     auto n = [&] (double beat, double len, int note, float vel) { p.notes.push_back ({ beat * BEAT, len * BEAT, note, vel }); };
     const int am[3] = { 57, 60, 64 }, fm[3] = { 53, 57, 60 };
