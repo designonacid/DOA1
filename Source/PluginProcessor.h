@@ -4,6 +4,7 @@
 #include <juce_audio_utils/juce_audio_utils.h>
 #include "DSP/SynthEngine.h"
 #include "DSP/Effects.h"
+#include "DSP/Arpeggiator.h"
 
 namespace ids
 {
@@ -50,10 +51,14 @@ private:
     static juce::AudioProcessorValueTreeState::ParameterLayout createLayout();
     halcyon::Params readParams() const;
     halcyon::FxParams readFxParams() const;
+    halcyon::ArpParams readArpParams() const;
+    void handleEngineMessage (const juce::MidiMessage&);
     float v (const juce::String& id) const { return apvts.getRawParameterValue (id)->load(); }
 
     halcyon::Engine engine;
     halcyon::FxChain fxChain;
+    halcyon::Arpeggiator arp;
+    bool arpWasOn = false, arpHoldWasOn = false;
     int currentPreset = 0;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HalcyonProcessor)

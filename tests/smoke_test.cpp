@@ -97,6 +97,11 @@ int main()
         auto img2 = ed->createComponentSnapshot (ed->getLocalBounds(), true, 1.5f);
         auto pf2 = juce::File::getCurrentWorkingDirectory().getChildFile ("halcyon_fx.png"); pf2.deleteFile();
         juce::FileOutputStream os2 (pf2); juce::PNGImageFormat().writeImageToStream (img2, os2);
+        proc.setCurrentProgram (6);
+        he->showPage (2);
+        auto img3 = ed->createComponentSnapshot (ed->getLocalBounds(), true, 1.5f);
+        auto pf3 = juce::File::getCurrentWorkingDirectory().getChildFile ("halcyon_mod.png"); pf3.deleteFile();
+        juce::FileOutputStream os3 (pf3); juce::PNGImageFormat().writeImageToStream (img3, os3);
     }
     std::printf ("UI: %dx%d\n", ed->getWidth(), ed->getHeight());
     ed.reset();

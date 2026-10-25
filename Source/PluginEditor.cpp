@@ -268,15 +268,38 @@ HalcyonEditor::HalcyonEditor (HalcyonProcessor& p)
     }
     for (auto* pn : fxPanels) addChildComponent (pn);
 
-    for (auto* b : { &synthTab, &fxTab })
+    // ---- ARP / MOD page ----
+    {
+        const juce::Colour arpTint { 0xffff6fa8 };
+        auto* a = modPanels.add (new Panel ("ARPEGGIATOR", arpTint));
+        a->add (toggle ("arp_on", "On", arpTint), 0.9f);
+        a->add (choice ("arp_mode", "Mode", arpTint), 1.6f);
+        a->add (choice ("arp_rate", "Rate", arpTint), 1.2f);
+        a->add (knob ("arp_oct", "Octaves", arpTint));
+        a->add (knob ("arp_gate", "Gate", arpTint));
+        a->add (knob ("arp_swing", "Swing", arpTint));
+        a->add (toggle ("arp_hold", "Hold", arpTint), 0.9f);
+        for (int m = 1; m <= halcyon::kNumSlots; ++m)
+        {
+            const juce::String pre = "mm" + juce::String (m);
+            auto* sl = modPanels.add (new Panel ("MOD MATRIX " + juce::String (m), modTint));
+            sl->add (choice (pre + "_src", "Source", modTint), 2.0f);
+            sl->add (choice (pre + "_dst", "Destination", modTint), 2.0f);
+            sl->add (knob (pre + "_amt", "Amount", modTint));
+        }
+    }
+    for (auto* pn : modPanels) addChildComponent (pn);
+
+    for (auto* b : { &synthTab, &fxTab, &modTab })
     {
         b->setRadioGroupId (7);
         b->setClickingTogglesState (true);
         addAndMakeVisible (b);
     }
     synthTab.setToggleState (true, juce::dontSendNotification);
-    synthTab.onClick = [this] { if (synthTab.getToggleState()) showPage (false); };
-    fxTab.onClick    = [this] { if (fxTab.getToggleState()) showPage (true); };
+    synthTab.onClick = [this] { if (synthTab.getToggleState()) showPage (0); };
+    fxTab.onClick    = [this] { if (fxTab.getToggleState()) showPage (1); };
+    modTab.onClick   = [this] { if (modTab.getToggleState()) showPage (2); };
 
     for (int i = 0; i < proc.getNumPrograms(); ++i) presetBox.addItem (proc.getProgramName (i), i + 1);
     presetBox.setSelectedId (proc.getCurrentProgram() + 1, juce::dontSendNotification);
@@ -297,12 +320,14 @@ HalcyonEditor::HalcyonEditor (HalcyonProcessor& p)
     startTimerHz (10);
 }
 
-void HalcyonEditor::showPage (bool fx)
+void HalcyonEditor::showPage (int page)
 {
-    for (auto* pn : panels)   pn->setVisible (! fx);
-    for (auto* pn : fxPanels) pn->setVisible (fx);
-    synthTab.setToggleState (! fx, juce::dontSendNotification);
-    fxTab.setToggleState (fx, juce::dontSendNotification);
+    for (auto* pn : panels)    pn->setVisible (page == 0);
+    for (auto* pn : fxPanels)  pn->setVisible (page == 1);
+    for (auto* pn : modPanels) pn->setVisible (page == 2);
+    synthTab.setToggleState (page == 0, juce::dontSendNotification);
+    fxTab.setToggleState (page == 1, juce::dontSendNotification);
+    modTab.setToggleState (page == 2, juce::dontSendNotification);
 }
 
 HalcyonEditor::~HalcyonEditor() { stopTimer(); setLookAndFeel (nullptr); }
@@ -333,9 +358,10 @@ void HalcyonEditor::resized()
     presetBox.setBounds (header.removeFromRight (240).reduced (0, 8));
     voiceLabel.setBounds (header.removeFromRight (120).reduced (8, 8));
     {
-        auto tabs = header.withTrimmedLeft (340).removeFromLeft (180).reduced (0, 8);
+        auto tabs = header.withTrimmedLeft (340).removeFromLeft (300).reduced (0, 8);
         synthTab.setBounds (tabs.removeFromLeft (90));
         fxTab.setBounds (tabs.removeFromLeft (80));
+        modTab.setBounds (tabs.removeFromLeft (120));
     }
     r.removeFromTop (6);
 
@@ -357,6 +383,22 @@ void HalcyonEditor::resized()
         layoutRow (fxArea.removeFromTop (fxRowH), { { 0, 4.4f }, { 1, 4.9f }, { 2, 4.9f } }); fxArea.removeFromTop (gap);
         layoutRow (fxArea.removeFromTop (fxRowH), { { 3, 3.0f }, { 4, 7.0f } });              fxArea.removeFromTop (gap);
         layoutRow (fxArea, { { 5, 4.9f }, { 6, 5.9f } });
+    }
+    // ---- ARP / MOD page ----
+    {
+        auto area = r;
+        const int h = 132;
+        modPanels[0]->setBounds (area.removeFromTop (h));
+        area.removeFromTop (gap * 2);
+        const int half = (area.getWidth() - gap) / 2;
+        for (int row = 0; row < 2; ++row)
+        {
+            auto line = area.removeFromTop (h);
+            modPanels[1 + row * 2]->setBounds (line.removeFromLeft (half));
+            line.removeFromLeft (gap);
+            modPanels[2 + row * 2]->setBounds (line);
+            area.removeFromTop (gap);
+        }
     }
 
     auto partsArea = r.removeFromTop (rowH * 3 + gap * 2);

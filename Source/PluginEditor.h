@@ -66,7 +66,7 @@ public:
     ~HalcyonEditor() override;
     void paint (juce::Graphics&) override;
     void resized() override;
-    void showPage (bool fx);
+    void showPage (int page);   // 0 synth, 1 fx, 2 arp/mod
 
 private:
     void timerCallback() override;
@@ -75,7 +75,8 @@ private:
     hui::LookAndFeel lnf;
     juce::OwnedArray<hui::Panel> panels;   // synth page, see resized() for order
     juce::OwnedArray<hui::Panel> fxPanels; // fx page
-    juce::TextButton synthTab { "SYNTH" }, fxTab { "FX" };
+    juce::OwnedArray<hui::Panel> modPanels; // arp + mod matrix page
+    juce::TextButton synthTab { "SYNTH" }, fxTab { "FX" }, modTab { "ARP / MOD" };
     juce::ComboBox presetBox;
     juce::Label voiceLabel;
     juce::MidiKeyboardComponent keyboard;

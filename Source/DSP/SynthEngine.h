@@ -16,7 +16,8 @@ constexpr int kNumOsc = 4, kMaxUnison = 8, kMaxVoices = 16, kCtrl = 16; // contr
 
 enum Wave { Saw, Pulse, Tri, Sine, Noise };
 enum FilterType { LowPass, BandPass, HighPass };
-enum Target { TNone, TCutoffA, TCutoffB, TCutoffAB, TPitchAll, TPitchA, TPitchB, TResoAB, TPan, TVolume };
+enum Target { TNone, TCutoffA, TCutoffB, TCutoffAB, TPitchAll, TPitchA, TPitchB, TResoAB, TPan, TVolume, TDetune, TDrive, TBalance };
+enum Source { SNone, SVelocity, SModWheel, SAftertouch, SKey, SLfo1, SLfo2, SModEnv1, SModEnv2, SRandom };
 enum Mode { Poly, Mono, Legato };
 
 struct ADSR { float a = 0.005f, d = 0.3f, s = 0.8f, r = 0.3f; };
@@ -24,6 +25,8 @@ struct OscParams { bool on = true; int wave = Saw, oct = 0, semi = 0; float fine
 struct FilterParams { int type = LowPass, slope = 1; float cutoff = 8000, reso = 0.1f, drive = 0, keytrack = 0; };
 struct ModEnvParams { ADSR env { 0.001f, 0.3f, 0.0f, 0.3f }; float amount = 0; int target = TNone; };
 struct LfoParams { int wave = 0; float rate = 1.0f, amount = 0; int target = TNone; };
+struct ModSlot { int source = SNone, target = TNone; float amount = 0; };
+constexpr int kNumSlots = 4;
 
 struct Params
 {
@@ -32,6 +35,7 @@ struct Params
     ADSR amp[2];
     ModEnvParams menv[2];
     LfoParams lfo[2];
+    ModSlot matrix[kNumSlots];
     int polyphony = 8, mode = Poly;
     float porta = 0.0f, masterDb = -6.0f, bendRange = 2.0f;
 };
@@ -109,6 +113,7 @@ struct Voice
     Envelope amp[2], mod[2];
     SVF filt[2][2][2];       // part, stage, channel
     uint32_t seed = 22222u;
+    float randomValue = 0.0f;   // per-note random, -1..1
 
     bool active() const { return amp[0].active() || amp[1].active(); }
 };
@@ -128,6 +133,8 @@ public:
 
     void setParams (const Params& p) { params = p; }
     void pitchBend (float normalised) { bend = normalised; } // -1..1
+    void modWheel (float v)    { wheel = v; }                // 0..1
+    void aftertouch (float v)  { pressure = v; }             // 0..1
 
     void noteOn (int note, float vel)
     {
@@ -189,7 +196,8 @@ public:
             {
                 lfoPhase[l] += params.lfo[l].rate * len / fs;
                 if (lfoPhase[l] >= 1.0) { lfoPhase[l] -= std::floor (lfoPhase[l]); lfoSH[l] = nextRandom (lfoSeed) ; }
-                lfoValue[l] = lfoShape (params.lfo[l].wave, lfoPhase[l], lfoSH[l]) * params.lfo[l].amount;
+                lfoRaw[l] = lfoShape (params.lfo[l].wave, lfoPhase[l], lfoSH[l]);
+                lfoValue[l] = lfoRaw[l] * params.lfo[l].amount;
             }
             for (auto& v : voices)
                 if (v.active()) renderVoice (v, L + pos, R + pos, len);
@@ -234,6 +242,7 @@ private:
         if (retrigger || ! wasActive)
         {
             v.velocity = vel;
+            v.randomValue = nextRandom (v.seed);
             for (auto& e : v.amp) e.gateOn();
             for (auto& e : v.mod) e.gateOn();
             if (! wasActive) for (auto& p : v.filt) for (auto& s : p) for (auto& f : s) f.reset();
@@ -271,7 +280,27 @@ private:
         float s = 0.0f;
         for (int m = 0; m < 2; ++m) if (params.menv[m].target == target) s += v.mod[m].v * params.menv[m].amount;
         for (int l = 0; l < 2; ++l) if (params.lfo[l].target == target) s += lfoValue[l];
+        for (const auto& slot : params.matrix)
+            if (slot.target == target && slot.source != SNone && slot.amount != 0.0f)
+                s += sourceValue (v, slot.source) * slot.amount;
         return s;
+    }
+
+    float sourceValue (const Voice& v, int src) const
+    {
+        switch (src)
+        {
+            case SVelocity:   return v.velocity;
+            case SModWheel:   return wheel;
+            case SAftertouch: return pressure;
+            case SKey:        return ((float) v.note - 60.0f) / 48.0f;
+            case SLfo1:       return lfoRaw[0];
+            case SLfo2:       return lfoRaw[1];
+            case SModEnv1:    return v.mod[0].v;
+            case SModEnv2:    return v.mod[1].v;
+            case SRandom:     return v.randomValue;
+            default:          return 0.0f;
+        }
     }
 
     void renderVoice (Voice& v, float* L, float* R, int len)
@@ -285,6 +314,10 @@ private:
         const float resoMod = modSum (v, TResoAB);
         const float panMod = modSum (v, TPan);
         const float volMod = std::clamp (1.0f + modSum (v, TVolume), 0.0f, 2.0f);
+        const float detuneMul = std::clamp (1.0f + modSum (v, TDetune), 0.0f, 3.0f);
+        const float driveMod = modSum (v, TDrive);
+        const float bal = std::clamp (modSum (v, TBalance), -1.0f, 1.0f);
+        const float partGain[2] = { 1.0f - std::max (0.0f, bal), 1.0f + std::min (0.0f, bal) };
 
         double inc[kNumOsc][kMaxUnison];
         for (int o = 0; o < kNumOsc; ++o)
@@ -293,7 +326,7 @@ private:
             if (! op.on) continue;
             const float base = v.pitch + op.oct * 12.0f + op.semi + op.fine * 0.01f + pitchPart[o / 2];
             for (int u = 0; u < std::clamp (op.voices, 1, kMaxUnison); ++u)
-                inc[o][u] = 440.0 * std::pow (2.0, (base + detuneSemis[o][u] - 69.0) / 12.0) / fs;
+                inc[o][u] = 440.0 * std::pow (2.0, (base + detuneSemis[o][u] * detuneMul - 69.0) / 12.0) / fs;
         }
 
         SVFCoefs fc[2][2];
@@ -349,9 +382,10 @@ private:
                 }
 
                 const auto& fp = params.filt[p];
-                if (fp.drive > 0.001f)
+                const float drive = std::clamp (fp.drive + driveMod, 0.0f, 1.0f);
+                if (drive > 0.001f)
                 {
-                    const float g = 1.0f + fp.drive * 9.0f, norm = 1.0f / std::sqrt (g);
+                    const float g = 1.0f + drive * 9.0f, norm = 1.0f / std::sqrt (g);
                     sl = std::tanh (sl * g) * norm; sr = std::tanh (sr * g) * norm;
                 }
                 const auto& c0 = fc[p][0];
@@ -363,7 +397,7 @@ private:
                     sl = v.filt[p][1][0].process (sl, c1.a1, c1.a2, c1.a3, c1.k, fp.type);
                     sr = v.filt[p][1][1].process (sr, c1.a1, c1.a2, c1.a3, c1.k, fp.type);
                 }
-                const float g = env * velGain * volMod;
+                const float g = env * velGain * volMod * partGain[p];
                 outL += sl * g; outR += sr * g;
             }
             L[i] += outL * panL;
@@ -384,7 +418,8 @@ private:
     float detuneSemis[kNumOsc][kMaxUnison] {}, gainL[kNumOsc][kMaxUnison] {}, gainR[kNumOsc][kMaxUnison] {};
     float portaCoef = 1.0f;
     double lfoPhase[2] {};
-    float lfoValue[2] {}, lfoSH[2] {};
+    float lfoValue[2] {}, lfoRaw[2] {}, lfoSH[2] {};
+    float wheel = 0.0f, pressure = 0.0f;
     uint32_t lfoSeed = 987654u;
 };
 

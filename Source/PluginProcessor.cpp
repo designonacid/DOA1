@@ -7,7 +7,9 @@ using namespace juce;
 namespace
 {
     const StringArray waveNames   { "Saw", "Pulse", "Triangle", "Sine", "Noise" };
-    const StringArray targetNames { "None", "Cutoff A", "Cutoff B", "Cutoff A+B", "Pitch", "Pitch A", "Pitch B", "Reso", "Pan", "Volume" };
+    const StringArray targetNames { "None", "Cutoff A", "Cutoff B", "Cutoff A+B", "Pitch", "Pitch A", "Pitch B", "Reso", "Pan", "Volume",
+                                    "Detune", "Drive", "Balance A/B" };
+    const StringArray sourceNames { "None", "Velocity", "Mod Wheel", "Aftertouch", "Key", "LFO 1", "LFO 2", "Mod Env 1", "Mod Env 2", "Random" };
     const StringArray lfoWaves    { "Sine", "Triangle", "Saw", "Square", "S&H" };
 
     NormalisableRange<float> timeRange (float maxSec) { return NormalisableRange<float> (0.0005f, maxSec, 0.0f, 0.25f); }
@@ -27,6 +29,7 @@ namespace
                 { "a2_on", 1 }, { "a2_oct", 1 }, { "a2_voices", 6 }, { "a2_detune", 0.3f }, { "a2_vol", 0.5f },
                 { "b1_on", 1 }, { "b1_oct", -1 }, { "b1_voices", 4 }, { "b1_detune", 0.25f }, { "b1_vol", 0.45f },
                 { "a_cutoff", 9000 }, { "a_reso", 0.1f }, { "b_cutoff", 6000 },
+                { "mm1_src", 2 }, { "mm1_dst", 10 }, { "mm1_amt", 0.8f },    // mod wheel -> more detune
                 { "a_d", 0.5f }, { "a_s", 0.85f }, { "a_r", 0.35f }, { "b_d", 0.5f }, { "b_s", 0.85f }, { "b_r", 0.35f },
                 { "dl_on", 1 }, { "dl_time", 6 }, { "dl_fb", 0.3f }, { "dl_mix", 0.18f }, { "dl_tone", 5000 },
                 { "rv_on", 1 }, { "rv_size", 0.8f }, { "rv_mix", 0.22f },
@@ -68,6 +71,19 @@ namespace
                 { "dl_on", 1 }, { "dl_time", 2 }, { "dl_fb", 0.35f }, { "dl_mix", 0.22f },
                 { "ph_on", 1 }, { "ph_rate", 0.15f }, { "ph_mix", 0.35f },
                 { "rv_on", 1 }, { "rv_size", 0.7f }, { "rv_mix", 0.2f }, { "master", -10 } } },
+            { "Arp - Melodic Sequence", {
+                { "a1_voices", 3 }, { "a1_detune", 0.15f },
+                { "a2_on", 1 }, { "a2_wave", 1 }, { "a2_oct", 1 }, { "a2_vol", 0.35f },
+                { "a_cutoff", 600 }, { "a_reso", 0.3f },
+                { "m1_d", 0.18f }, { "m1_s", 0 }, { "m1_amt", 0.5f }, { "m1_target", 1 },
+                { "a_d", 0.3f }, { "a_s", 0 }, { "a_r", 0.2f },
+                { "arp_on", 1 }, { "arp_mode", 2 }, { "arp_rate", 3 }, { "arp_oct", 2 }, { "arp_gate", 0.45f },
+                { "l2_rate", 0.07f },
+                { "mm1_src", 1 }, { "mm1_dst", 1 }, { "mm1_amt", 0.3f },     // velocity -> cutoff A
+                { "mm2_src", 2 }, { "mm2_dst", 7 }, { "mm2_amt", 0.4f },     // mod wheel -> resonance
+                { "mm3_src", 6 }, { "mm3_dst", 1 }, { "mm3_amt", 0.15f },    // slow LFO 2 -> cutoff A
+                { "dl_on", 1 }, { "dl_time", 3 }, { "dl_fb", 0.35f }, { "dl_mix", 0.25f },
+                { "rv_on", 1 }, { "rv_size", 0.7f }, { "rv_mix", 0.2f }, { "master", -4 } } },
         };
         return list;
     }
@@ -139,6 +155,25 @@ APVTS::ParameterLayout HalcyonProcessor::createLayout()
     addF ("porta", "Portamento", { 0.0f, 1.0f, 0.0f, 0.5f }, 0.0f, secText);
     addF ("bend", "Bend Range", { 0.0f, 24.0f, 1.0f }, 2.0f, nullptr, "st");
     addF ("master", "Master", { -36.0f, 6.0f, 0.1f }, -6.0f, nullptr, "dB");
+
+    // ---- arpeggiator ----
+    StringArray arpRates; for (auto* nm : halcyon::kArpRateNames) arpRates.add (nm);
+    addB ("arp_on", "Arp On", false);
+    addC ("arp_mode", "Arp Mode", { "Up", "Down", "Up/Down", "As Played", "Random", "Chord" }, 0);
+    addC ("arp_rate", "Arp Rate", arpRates, 3);
+    addI ("arp_oct", "Arp Octaves", 1, 4, 1);
+    addF ("arp_gate", "Arp Gate", { 0.05f, 1.0f }, 0.5f, pctText);
+    addF ("arp_swing", "Arp Swing", { 0.0f, 0.5f }, 0.0f, pctText);
+    addB ("arp_hold", "Arp Hold", false);
+
+    // ---- mod matrix ----
+    for (int m = 1; m <= halcyon::kNumSlots; ++m)
+    {
+        const String pre = "mm" + String (m), nm = "Matrix " + String (m) + " ";
+        addC (pre + "_src", nm + "Source", sourceNames, 0);
+        addC (pre + "_dst", nm + "Destination", targetNames, 0);
+        addF (pre + "_amt", nm + "Amount", { -1.0f, 1.0f }, 0.0f, pctText);
+    }
 
     // ---- effects ----
     addB ("dist_on", "Distortion On", false);
@@ -219,6 +254,11 @@ halcyon::Params HalcyonProcessor::readParams() const
         p.lfo[i].wave = (int) v (lf + "_wave"); p.lfo[i].rate = v (lf + "_rate");
         p.lfo[i].amount = v (lf + "_amt");      p.lfo[i].target = (int) v (lf + "_target");
     }
+    for (int m = 0; m < halcyon::kNumSlots; ++m)
+    {
+        const String pre = "mm" + String (m + 1);
+        p.matrix[m] = { (int) v (pre + "_src"), (int) v (pre + "_dst"), v (pre + "_amt") };
+    }
     p.mode = (int) v ("mode");  p.polyphony = (int) v ("poly");  p.porta = v ("porta");
     p.bendRange = v ("bend");   p.masterDb = v ("master");
     return p;
@@ -239,8 +279,29 @@ halcyon::FxParams HalcyonProcessor::readFxParams() const
     return f;
 }
 
+halcyon::ArpParams HalcyonProcessor::readArpParams() const
+{
+    halcyon::ArpParams a;
+    a.on = v ("arp_on") > 0.5f; a.mode = (int) v ("arp_mode"); a.rate = (int) v ("arp_rate"); a.octaves = (int) v ("arp_oct");
+    a.gate = v ("arp_gate"); a.swing = v ("arp_swing"); a.hold = v ("arp_hold") > 0.5f;
+    return a;
+}
+
+void HalcyonProcessor::handleEngineMessage (const MidiMessage& m)
+{
+    if (m.isNoteOn())                                engine.noteOn (m.getNoteNumber(), m.getFloatVelocity());
+    else if (m.isNoteOff())                          engine.noteOff (m.getNoteNumber());
+    else if (m.isPitchWheel())                       engine.pitchBend ((m.getPitchWheelValue() - 8192) / 8192.0f);
+    else if (m.isController() && m.getControllerNumber() == 1) engine.modWheel (m.getControllerValue() / 127.0f);
+    else if (m.isChannelPressure())                  engine.aftertouch (m.getChannelPressureValue() / 127.0f);
+    else if (m.isAftertouch())                       engine.aftertouch (m.getAfterTouchValue() / 127.0f);
+    else if (m.isAllNotesOff() || m.isAllSoundOff()) engine.allNotesOff();
+}
+
 void HalcyonProcessor::prepareToPlay (double sampleRate, int)
 {
+    arp.reset();
+    arpWasOn = false;
     engine.prepare (sampleRate);
     fxChain.prepare (sampleRate);
     keyboardState.reset();
@@ -260,24 +321,50 @@ void HalcyonProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& mid
 
     auto* L = buffer.getWritePointer (0);
     auto* R = buffer.getWritePointer (1);
-    int pos = 0;
-    for (const auto meta : midi)
-    {
-        const int at = jlimit (0, buffer.getNumSamples(), meta.samplePosition);
-        if (at > pos) { engine.render (L + pos, R + pos, at - pos); pos = at; }
-        const auto m = meta.getMessage();
-        if (m.isNoteOn())                               engine.noteOn (m.getNoteNumber(), m.getFloatVelocity());
-        else if (m.isNoteOff())                         engine.noteOff (m.getNoteNumber());
-        else if (m.isPitchWheel())                      engine.pitchBend ((m.getPitchWheelValue() - 8192) / 8192.0f);
-        else if (m.isAllNotesOff() || m.isAllSoundOff()) engine.allNotesOff();
-    }
-    if (pos < buffer.getNumSamples()) engine.render (L + pos, R + pos, buffer.getNumSamples() - pos);
-    activeVoices = engine.activeVoiceCount();
+    const int numSamples = buffer.getNumSamples();
 
-    double bpm = 128.0;
+    double bpm = 128.0, hostPpq = 0.0;
+    bool hostPlaying = false;
     if (auto* ph = getPlayHead())
         if (auto position = ph->getPosition())
+        {
             if (auto hostBpm = position->getBpm()) bpm = *hostBpm;
+            if (position->getIsPlaying())
+                if (auto pq = position->getPpqPosition()) { hostPpq = *pq; hostPlaying = true; }
+        }
+
+    // ---- arpeggiator: turns held notes into a stream of note events ----
+    const auto ap = readArpParams();
+    MidiBuffer arpMidi;
+    if (ap.on || arpWasOn)
+    {
+        for (const auto meta : midi)
+        {
+            const auto m = meta.getMessage();
+            if (m.isNoteOn())       arp.noteOn (m.getNoteNumber(), m.getFloatVelocity(), ap.hold);
+            else if (m.isNoteOff()) arp.noteOff (m.getNoteNumber(), ap.hold);
+            else                    arpMidi.addEvent (m, meta.samplePosition);   // pass through bend, wheel...
+        }
+        if (arpHoldWasOn && ! ap.hold) arp.releaseLatch();
+        const auto& events = ap.on ? arp.process (numSamples, getSampleRate(), bpm, hostPlaying, hostPpq, ap) : arp.flush();
+        for (auto& e : events)
+            arpMidi.addEvent (e.on ? MidiMessage::noteOn (1, e.note, jlimit (0.01f, 1.0f, e.velocity))
+                                   : MidiMessage::noteOff (1, e.note), e.sample);
+        if (! ap.on) arp.reset();
+    }
+    arpWasOn = ap.on;
+    arpHoldWasOn = ap.hold;
+    const MidiBuffer& events = (ap.on || ! arpMidi.isEmpty()) ? arpMidi : midi;
+
+    int pos = 0;
+    for (const auto meta : events)
+    {
+        const int at = jlimit (0, numSamples, meta.samplePosition);
+        if (at > pos) { engine.render (L + pos, R + pos, at - pos); pos = at; }
+        handleEngineMessage (meta.getMessage());
+    }
+    if (pos < numSamples) engine.render (L + pos, R + pos, numSamples - pos);
+    activeVoices = engine.activeVoiceCount();
     fxChain.process (L, R, buffer.getNumSamples(), readFxParams(), bpm);
 }
 
