@@ -78,6 +78,8 @@ private:
     juce::OwnedArray<hui::Panel> modPanels; // arp + mod matrix page
     juce::TextButton synthTab { "SYNTH" }, fxTab { "FX" }, modTab { "ARP / MOD" };
     juce::ComboBox presetBox;
+    juce::TextButton prevPreset { "<" }, nextPreset { ">" };
+    void stepPreset (int delta);
     juce::Label voiceLabel;
     juce::MidiKeyboardComponent keyboard;
 

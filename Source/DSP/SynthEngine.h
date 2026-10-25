@@ -17,7 +17,7 @@ constexpr int kNumOsc = 4, kMaxUnison = 8, kMaxVoices = 16, kCtrl = 16; // contr
 enum Wave { Saw, Pulse, Tri, Sine, Noise };
 enum FilterType { LowPass, BandPass, HighPass };
 enum Target { TNone, TCutoffA, TCutoffB, TCutoffAB, TPitchAll, TPitchA, TPitchB, TResoAB, TPan, TVolume, TDetune, TDrive, TBalance };
-enum Source { SNone, SVelocity, SModWheel, SAftertouch, SKey, SLfo1, SLfo2, SModEnv1, SModEnv2, SRandom };
+enum Source { SNone, SVelocity, SModWheel, SAftertouch, SKey, SLfo1, SLfo2, SModEnv1, SModEnv2, SRandom, SLfo1Wheel };
 enum Mode { Poly, Mono, Legato };
 
 struct ADSR { float a = 0.005f, d = 0.3f, s = 0.8f, r = 0.3f; };
@@ -203,8 +203,7 @@ public:
                 if (v.active()) renderVoice (v, L + pos, R + pos, len);
             pos += len;
         }
-        const float g = std::pow (10.0f, params.masterDb / 20.0f);
-        for (int i = 0; i < n; ++i) { L[i] *= g; R[i] *= g; }
+        // master volume is applied by the host plugin after the effects
     }
 
 private:
@@ -299,6 +298,7 @@ private:
             case SModEnv1:    return v.mod[0].v;
             case SModEnv2:    return v.mod[1].v;
             case SRandom:     return v.randomValue;
+            case SLfo1Wheel:  return lfoRaw[0] * wheel;     // mod-wheel vibrato
             default:          return 0.0f;
         }
     }

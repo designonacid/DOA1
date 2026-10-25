@@ -301,7 +301,21 @@ HalcyonEditor::HalcyonEditor (HalcyonProcessor& p)
     fxTab.onClick    = [this] { if (fxTab.getToggleState()) showPage (1); };
     modTab.onClick   = [this] { if (modTab.getToggleState()) showPage (2); };
 
-    for (int i = 0; i < proc.getNumPrograms(); ++i) presetBox.addItem (proc.getProgramName (i), i + 1);
+    // presets grouped by their "Category - Name" prefix
+    {
+        juce::String lastCat;
+        for (int i = 0; i < proc.getNumPrograms(); ++i)
+        {
+            const auto name = proc.getProgramName (i);
+            const auto cat = name.containsIgnoreCase (" - ") ? name.upToFirstOccurrenceOf (" - ", false, false) : juce::String ("General");
+            if (cat != lastCat) { presetBox.addSectionHeading (cat.toUpperCase()); lastCat = cat; }
+            presetBox.addItem (name.fromFirstOccurrenceOf (" - ", false, false).isEmpty() ? name : name.fromFirstOccurrenceOf (" - ", false, false), i + 1);
+        }
+    }
+    prevPreset.onClick = [this] { stepPreset (-1); };
+    nextPreset.onClick = [this] { stepPreset (1); };
+    addAndMakeVisible (prevPreset);
+    addAndMakeVisible (nextPreset);
     presetBox.setSelectedId (proc.getCurrentProgram() + 1, juce::dontSendNotification);
     presetBox.onChange = [this] { proc.setCurrentProgram (presetBox.getSelectedId() - 1); };
     addAndMakeVisible (presetBox);
@@ -318,6 +332,13 @@ HalcyonEditor::HalcyonEditor (HalcyonProcessor& p)
 
     setSize (1240, 760);
     startTimerHz (10);
+}
+
+void HalcyonEditor::stepPreset (int delta)
+{
+    const int n = proc.getNumPrograms();
+    proc.setCurrentProgram ((proc.getCurrentProgram() + delta + n) % n);
+    presetBox.setSelectedId (proc.getCurrentProgram() + 1, juce::dontSendNotification);
 }
 
 void HalcyonEditor::showPage (int page)
@@ -355,7 +376,11 @@ void HalcyonEditor::resized()
 {
     auto r = getLocalBounds().reduced (14);
     auto header = r.removeFromTop (44);
-    presetBox.setBounds (header.removeFromRight (240).reduced (0, 8));
+    nextPreset.setBounds (header.removeFromRight (30).reduced (0, 8));
+    header.removeFromRight (4);
+    presetBox.setBounds (header.removeFromRight (230).reduced (0, 8));
+    header.removeFromRight (4);
+    prevPreset.setBounds (header.removeFromRight (30).reduced (0, 8));
     voiceLabel.setBounds (header.removeFromRight (120).reduced (8, 8));
     {
         auto tabs = header.withTrimmedLeft (340).removeFromLeft (300).reduced (0, 8);

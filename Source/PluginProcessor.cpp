@@ -9,7 +9,7 @@ namespace
     const StringArray waveNames   { "Saw", "Pulse", "Triangle", "Sine", "Noise" };
     const StringArray targetNames { "None", "Cutoff A", "Cutoff B", "Cutoff A+B", "Pitch", "Pitch A", "Pitch B", "Reso", "Pan", "Volume",
                                     "Detune", "Drive", "Balance A/B" };
-    const StringArray sourceNames { "None", "Velocity", "Mod Wheel", "Aftertouch", "Key", "LFO 1", "LFO 2", "Mod Env 1", "Mod Env 2", "Random" };
+    const StringArray sourceNames { "None", "Velocity", "Mod Wheel", "Aftertouch", "Key", "LFO 1", "LFO 2", "Mod Env 1", "Mod Env 2", "Random", "LFO 1 x Wheel" };
     const StringArray lfoWaves    { "Sine", "Triangle", "Saw", "Square", "S&H" };
 
     NormalisableRange<float> timeRange (float maxSec) { return NormalisableRange<float> (0.0005f, maxSec, 0.0f, 0.25f); }
@@ -23,67 +23,7 @@ namespace
     const std::vector<Preset>& presets()
     {
         static const std::vector<Preset> list = {
-            { "Init", {} },
-            { "Lead - Supersaw", {
-                { "a1_voices", 8 }, { "a1_detune", 0.35f }, { "a1_vol", 0.8f },
-                { "a2_on", 1 }, { "a2_oct", 1 }, { "a2_voices", 6 }, { "a2_detune", 0.3f }, { "a2_vol", 0.5f },
-                { "b1_on", 1 }, { "b1_oct", -1 }, { "b1_voices", 4 }, { "b1_detune", 0.25f }, { "b1_vol", 0.45f },
-                { "a_cutoff", 9000 }, { "a_reso", 0.1f }, { "b_cutoff", 6000 },
-                { "mm1_src", 2 }, { "mm1_dst", 10 }, { "mm1_amt", 0.8f },    // mod wheel -> more detune
-                { "a_d", 0.5f }, { "a_s", 0.85f }, { "a_r", 0.35f }, { "b_d", 0.5f }, { "b_s", 0.85f }, { "b_r", 0.35f },
-                { "dl_on", 1 }, { "dl_time", 6 }, { "dl_fb", 0.3f }, { "dl_mix", 0.18f }, { "dl_tone", 5000 },
-                { "rv_on", 1 }, { "rv_size", 0.8f }, { "rv_mix", 0.22f },
-                { "master", -11.5f } } },
-            { "Pluck - Trance", {
-                { "a1_voices", 6 }, { "a1_detune", 0.25f },
-                { "a2_on", 1 }, { "a2_wave", 1 }, { "a2_oct", 1 }, { "a2_voices", 2 }, { "a2_detune", 0.1f }, { "a2_vol", 0.4f },
-                { "a_cutoff", 300 }, { "a_reso", 0.25f }, { "a_key", 0.5f },
-                { "m1_a", 0.001f }, { "m1_d", 0.22f }, { "m1_s", 0 }, { "m1_r", 0.2f }, { "m1_amt", 0.55f }, { "m1_target", 1 },
-                { "a_d", 0.45f }, { "a_s", 0 }, { "a_r", 0.3f },
-                { "dl_on", 1 }, { "dl_time", 3 }, { "dl_fb", 0.4f }, { "dl_mix", 0.28f }, { "dl_tone", 4000 },
-                { "rv_on", 1 }, { "rv_size", 0.75f }, { "rv_mix", 0.2f }, { "master", -8 } } },
-            { "Pad - Warm", {
-                { "a1_voices", 8 }, { "a1_detune", 0.25f },
-                { "a2_on", 1 }, { "a2_wave", 1 }, { "a2_oct", -1 }, { "a2_voices", 4 }, { "a2_detune", 0.2f }, { "a2_vol", 0.5f },
-                { "b1_on", 1 }, { "b1_wave", 2 }, { "b1_vol", 0.5f },
-                { "a_cutoff", 1800 }, { "a_reso", 0.2f }, { "b_cutoff", 2500 }, { "b_slope", 0 },
-                { "a_a", 1.2f }, { "a_d", 1.0f }, { "a_s", 0.9f }, { "a_r", 2.5f }, { "b_a", 1.2f }, { "b_d", 1.0f }, { "b_s", 0.9f }, { "b_r", 2.5f },
-                { "l1_wave", 0 }, { "l1_rate", 0.15f }, { "l1_amt", 0.12f }, { "l1_target", 3 },
-                { "ch_on", 1 }, { "ch_rate", 0.4f }, { "ch_depth", 0.5f }, { "ch_mix", 0.45f },
-                { "rv_on", 1 }, { "rv_size", 0.92f }, { "rv_damp", 0.6f }, { "rv_mix", 0.35f }, { "master", -13.5f } } },
-            { "Bass - Reese", {
-                { "mode", 1 }, { "porta", 0.05f },
-                { "a1_oct", -2 }, { "a1_voices", 2 }, { "a1_detune", 0.12f },
-                { "a2_on", 1 }, { "a2_oct", -2 }, { "a2_fine", 8 }, { "a2_voices", 2 }, { "a2_detune", 0.1f },
-                { "b1_on", 1 }, { "b1_wave", 3 }, { "b1_oct", -3 }, { "b1_vol", 0.6f },
-                { "a_cutoff", 700 }, { "a_reso", 0.15f }, { "a_drive", 0.4f },
-                { "a_s", 1 }, { "a_r", 0.15f }, { "b_s", 1 }, { "b_r", 0.15f },
-                { "l1_wave", 1 }, { "l1_rate", 0.25f }, { "l1_amt", 0.08f }, { "l1_target", 1 },
-                { "dist_on", 1 }, { "dist_amt", 0.35f }, { "dist_mix", 0.6f },
-                { "cp_on", 1 }, { "cp_thresh", -18 }, { "cp_ratio", 4 }, { "cp_makeup", 4 }, { "master", -8 } } },
-            { "Stab - Melodic", {
-                { "a1_voices", 4 }, { "a1_detune", 0.2f },
-                { "a2_on", 1 }, { "a2_semi", 7 }, { "a2_voices", 4 }, { "a2_detune", 0.2f }, { "a2_vol", 0.6f },
-                { "b1_on", 1 }, { "b1_wave", 1 }, { "b1_oct", 1 }, { "b1_vol", 0.3f },
-                { "a_cutoff", 900 }, { "a_reso", 0.35f }, { "b_cutoff", 1500 },
-                { "m1_d", 0.35f }, { "m1_s", 0.1f }, { "m1_amt", 0.45f }, { "m1_target", 3 },
-                { "a_d", 0.6f }, { "a_s", 0.2f }, { "a_r", 0.4f }, { "b_d", 0.6f }, { "b_s", 0.2f }, { "b_r", 0.4f },
-                { "dl_on", 1 }, { "dl_time", 2 }, { "dl_fb", 0.35f }, { "dl_mix", 0.22f },
-                { "ph_on", 1 }, { "ph_rate", 0.15f }, { "ph_mix", 0.35f },
-                { "rv_on", 1 }, { "rv_size", 0.7f }, { "rv_mix", 0.2f }, { "master", -10 } } },
-            { "Arp - Melodic Sequence", {
-                { "a1_voices", 3 }, { "a1_detune", 0.15f },
-                { "a2_on", 1 }, { "a2_wave", 1 }, { "a2_oct", 1 }, { "a2_vol", 0.35f },
-                { "a_cutoff", 600 }, { "a_reso", 0.3f },
-                { "m1_d", 0.18f }, { "m1_s", 0 }, { "m1_amt", 0.5f }, { "m1_target", 1 },
-                { "a_d", 0.3f }, { "a_s", 0 }, { "a_r", 0.2f },
-                { "arp_on", 1 }, { "arp_mode", 2 }, { "arp_rate", 3 }, { "arp_oct", 2 }, { "arp_gate", 0.45f },
-                { "l2_rate", 0.07f },
-                { "mm1_src", 1 }, { "mm1_dst", 1 }, { "mm1_amt", 0.3f },     // velocity -> cutoff A
-                { "mm2_src", 2 }, { "mm2_dst", 7 }, { "mm2_amt", 0.4f },     // mod wheel -> resonance
-                { "mm3_src", 6 }, { "mm3_dst", 1 }, { "mm3_amt", 0.15f },    // slow LFO 2 -> cutoff A
-                { "dl_on", 1 }, { "dl_time", 3 }, { "dl_fb", 0.35f }, { "dl_mix", 0.25f },
-                { "rv_on", 1 }, { "rv_size", 0.7f }, { "rv_mix", 0.2f }, { "master", -4 } } },
+            #include "FactoryPresets.inc"
         };
         return list;
     }
@@ -366,6 +306,7 @@ void HalcyonProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& mid
     if (pos < numSamples) engine.render (L + pos, R + pos, numSamples - pos);
     activeVoices = engine.activeVoiceCount();
     fxChain.process (L, R, buffer.getNumSamples(), readFxParams(), bpm);
+    buffer.applyGain (Decibels::decibelsToGain (v ("master"), -100.0f));   // master is post-FX
 }
 
 //==============================================================================
