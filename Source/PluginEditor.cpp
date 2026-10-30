@@ -312,12 +312,39 @@ HalcyonEditor::HalcyonEditor (HalcyonProcessor& p)
             presetBox.addItem (name.fromFirstOccurrenceOf (" - ", false, false).isEmpty() ? name : name.fromFirstOccurrenceOf (" - ", false, false), i + 1);
         }
     }
+    loadBtn.setTooltip ("Load a .doa1 preset (for example one made by the DOA1 MCP sound matcher)");
+    saveBtn.setTooltip ("Save the current sound as a .doa1 preset");
+    loadBtn.onClick = [this]
+    {
+        chooser = std::make_unique<juce::FileChooser> ("Load DOA1 preset", juce::File::getSpecialLocation (juce::File::userHomeDirectory).getChildFile ("DOA1 Presets"), "*.doa1");
+        chooser->launchAsync (juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles, [this] (const juce::FileChooser& fc)
+        {
+            juce::String name;
+            if (fc.getResult().existsAsFile() && proc.loadPresetFile (fc.getResult(), name))
+                presetBox.setText (name, juce::dontSendNotification);
+        });
+    };
+    saveBtn.onClick = [this]
+    {
+        auto dir = juce::File::getSpecialLocation (juce::File::userHomeDirectory).getChildFile ("DOA1 Presets");
+        dir.createDirectory();
+        chooser = std::make_unique<juce::FileChooser> ("Save DOA1 preset", dir.getChildFile ("My Preset.doa1"), "*.doa1");
+        chooser->launchAsync (juce::FileBrowserComponent::saveMode | juce::FileBrowserComponent::warnAboutOverwriting, [this] (const juce::FileChooser& fc)
+        {
+            auto f = fc.getResult();
+            if (f == juce::File()) return;
+            f = f.withFileExtension ("doa1");
+            if (proc.savePresetFile (f, f.getFileNameWithoutExtension())) presetBox.setText (f.getFileNameWithoutExtension(), juce::dontSendNotification);
+        });
+    };
+    addAndMakeVisible (loadBtn);
+    addAndMakeVisible (saveBtn);
     prevPreset.onClick = [this] { stepPreset (-1); };
     nextPreset.onClick = [this] { stepPreset (1); };
     addAndMakeVisible (prevPreset);
     addAndMakeVisible (nextPreset);
     presetBox.setSelectedId (proc.getCurrentProgram() + 1, juce::dontSendNotification);
-    presetBox.onChange = [this] { proc.setCurrentProgram (presetBox.getSelectedId() - 1); };
+    presetBox.onChange = [this] { if (presetBox.getSelectedId() > 0) { proc.userPresetName.clear(); proc.setCurrentProgram (presetBox.getSelectedId() - 1); } };
     addAndMakeVisible (presetBox);
 
     voiceLabel.setJustificationType (juce::Justification::centredRight);
@@ -336,6 +363,7 @@ HalcyonEditor::HalcyonEditor (HalcyonProcessor& p)
 
 void HalcyonEditor::stepPreset (int delta)
 {
+    proc.userPresetName.clear();
     const int n = proc.getNumPrograms();
     proc.setCurrentProgram ((proc.getCurrentProgram() + delta + n) % n);
     presetBox.setSelectedId (proc.getCurrentProgram() + 1, juce::dontSendNotification);
@@ -356,7 +384,7 @@ HalcyonEditor::~HalcyonEditor() { stopTimer(); setLookAndFeel (nullptr); }
 void HalcyonEditor::timerCallback()
 {
     voiceLabel.setText ("VOICES " + juce::String (proc.activeVoices.load()), juce::dontSendNotification);
-    if (presetBox.getSelectedId() != proc.getCurrentProgram() + 1)
+    if (proc.userPresetName.isEmpty() && presetBox.getSelectedId() != proc.getCurrentProgram() + 1)
         presetBox.setSelectedId (proc.getCurrentProgram() + 1, juce::dontSendNotification);
 }
 
@@ -381,7 +409,11 @@ void HalcyonEditor::resized()
     presetBox.setBounds (header.removeFromRight (230).reduced (0, 8));
     header.removeFromRight (4);
     prevPreset.setBounds (header.removeFromRight (30).reduced (0, 8));
-    voiceLabel.setBounds (header.removeFromRight (120).reduced (8, 8));
+    header.removeFromRight (8);
+    saveBtn.setBounds (header.removeFromRight (62).reduced (0, 8));
+    header.removeFromRight (4);
+    loadBtn.setBounds (header.removeFromRight (62).reduced (0, 8));
+    voiceLabel.setBounds (header.removeFromRight (110).reduced (8, 8));
     {
         auto tabs = header.withTrimmedLeft (340).removeFromLeft (300).reduced (0, 8);
         synthTab.setBounds (tabs.removeFromLeft (90));

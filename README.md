@@ -82,6 +82,11 @@ python3 tools/tune_presets.py ./preset_lab
 python3 tools/make_presets.py tools/levels.json
 ```
 
+## Sound matching via MCP
+`tools/doa1_mcp` is an MCP server that turns an audio file into a DOA1 preset: an LLM can analyze a
+sound, match it, and refine the result ("brighter", "less reverb"). Matched presets are `.doa1` files,
+opened with the **LOAD** button; **SAVE** writes your own. See `tools/doa1_mcp/README.md`.
+
 ## Roadmap
 - Stage 4: preset import (needs reference preset files from a licensed copy of the original synth)
 

@@ -43,6 +43,11 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
+    // User preset files (.doa1, JSON): written by SAVE and by the DOA1 MCP sound matcher
+    bool loadPresetFile (const juce::File& file, juce::String& nameOut);
+    bool savePresetFile (const juce::File& file, const juce::String& name);
+    juce::String userPresetName;
+
     juce::AudioProcessorValueTreeState apvts;
     juce::MidiKeyboardState keyboardState;   // on-screen keyboard
     std::atomic<int> activeVoices { 0 };

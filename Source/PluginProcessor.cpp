@@ -323,6 +323,36 @@ void HalcyonProcessor::setCurrentProgram (int index)
         if (auto* rp = apvts.getParameter (id)) rp->setValueNotifyingHost (rp->convertTo0to1 (value));
 }
 
+bool HalcyonProcessor::loadPresetFile (const File& file, String& nameOut)
+{
+    const auto doc = JSON::parse (file.loadFileAsString());
+    if (! doc.isObject() || doc["format"].toString() != "DOA1 preset") return false;
+    auto* params = doc["params"].getDynamicObject();
+    if (params == nullptr) return false;
+    for (auto* prm : getParameters())                      // start from defaults, like factory presets
+        if (auto* rp = dynamic_cast<RangedAudioParameter*> (prm)) rp->setValueNotifyingHost (rp->getDefaultValue());
+    for (auto& prop : params->getProperties())
+        if (auto* rp = apvts.getParameter (prop.name.toString()))
+            rp->setValueNotifyingHost (rp->convertTo0to1 ((float) (double) prop.value));
+    nameOut = doc["name"].toString().isNotEmpty() ? doc["name"].toString() : file.getFileNameWithoutExtension();
+    userPresetName = nameOut;
+    return true;
+}
+
+bool HalcyonProcessor::savePresetFile (const File& file, const String& name)
+{
+    auto params = std::make_unique<DynamicObject>();
+    for (auto* prm : getParameters())
+        if (auto* rp = dynamic_cast<RangedAudioParameter*> (prm))
+            params->setProperty (rp->paramID, rp->convertFrom0to1 (rp->getValue()));
+    auto doc = std::make_unique<DynamicObject>();
+    doc->setProperty ("format", "DOA1 preset");
+    doc->setProperty ("version", 1);
+    doc->setProperty ("name", name);
+    doc->setProperty ("params", var (params.release()));
+    return file.replaceWithText (JSON::toString (var (doc.release())));
+}
+
 void HalcyonProcessor::getStateInformation (MemoryBlock& destData)
 {
     auto state = apvts.copyState();

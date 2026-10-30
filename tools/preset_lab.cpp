@@ -136,7 +136,8 @@ static void render (Settings& s, const Part& part, std::vector<float>& L, std::v
 {
     Engine e; e.prepare (SR); FxChain fx; fx.prepare (SR); Arpeggiator arp; arp.reset();
     FxParams f = s.f; if (dryOnly) { f.dlOn = false; f.rvOn = false; }
-    const int total = (int) ((part.length + 1.5) * SR);
+    const double tail = getenv ("LAB_TAIL") ? std::atof (getenv ("LAB_TAIL")) : 1.5;
+    const int total = (int) ((part.length + tail) * SR);
     L.assign ((size_t) total, 0.0f); R.assign ((size_t) total, 0.0f);
     struct Ev { int sample; int note; float vel; bool on; };
     std::vector<Ev> evs;
@@ -253,7 +254,13 @@ int main (int argc, char** argv)
         while (std::getline (ss, kv, ',')) { auto eq = kv.find ('='); vals[kv.substr (0, eq)] = std::stof (kv.substr (eq + 1)); }
         Settings s = toSettings (vals);
         const auto cat = category (name);
-        const Part part = partFor (cat);
+        Part part = partFor (cat);
+        if (const char* noteEnv = getenv ("LAB_NOTE"))
+        {
+            const double hold = getenv ("LAB_HOLD") ? std::atof (getenv ("LAB_HOLD")) : 1.0;
+            part = Part(); part.notes = { { 0.0, hold, std::atoi (noteEnv), 0.9f } };
+            part.length = hold; part.sustained = true;
+        }
         std::vector<float> L, R, dL, dR;
         render (s, part, L, R, false);
         render (s, part, dL, dR, true);

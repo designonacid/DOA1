@@ -5,3 +5,5 @@ build/
 .idea/
 tools/presets.tsv
 preset_lab
+__pycache__/
+*.pyc

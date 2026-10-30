@@ -128,6 +128,21 @@ int main()
     proc.setStateInformation (state.getData(), (int) state.getSize());
     std::printf ("STATE: a1 voices restored to %.0f (expect 8), presets %d\n", proc.apvts.getRawParameterValue ("a1_voices")->load(), proc.getNumPrograms());
 
+    {   // .doa1 user presets: save/load round trip, and a file written by the Python sound matcher
+        auto tmp = juce::File::getSpecialLocation (juce::File::tempDirectory).getChildFile ("smoke.doa1");
+        proc.setCurrentProgram (5);
+        const float cut = proc.apvts.getRawParameterValue ("a_cutoff")->load();
+        proc.savePresetFile (tmp, "Smoke");
+        proc.setCurrentProgram (0);
+        juce::String nm; const bool ok = proc.loadPresetFile (tmp, nm);
+        std::printf ("DOA1 FILE: round trip %s, name '%s', a_cutoff %.1f -> %.1f\n", ok ? "ok" : "FAILED", nm.toRawUTF8(), cut, proc.apvts.getRawParameterValue ("a_cutoff")->load());
+        if (auto* env = std::getenv ("DOA1_TEST_PRESET"))
+        {
+            const bool ok2 = proc.loadPresetFile (juce::File (env), nm);
+            std::printf ("DOA1 FILE: python preset %s '%s', a1_wave %.0f, a_cutoff %.1f\n", ok2 ? "loaded" : "FAILED", nm.toRawUTF8(),
+                         proc.apvts.getRawParameterValue ("a1_wave")->load(), proc.apvts.getRawParameterValue ("a_cutoff")->load());
+        }
+    }
     proc.setCurrentProgram (2);
     std::unique_ptr<juce::AudioProcessorEditor> ed (proc.createEditor());
     auto snap = [&] (const char* file)

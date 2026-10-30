@@ -66,3 +66,8 @@ if(HALCYON_BUILD_TESTS)
     target_compile_definitions(HalcyonSmokeTest PRIVATE $<TARGET_PROPERTY:Halcyon,COMPILE_DEFINITIONS>)
     target_link_libraries(HalcyonSmokeTest PRIVATE Halcyon juce::juce_recommended_config_flags)
 endif()
+
+# Preset lab: renders presets with the DOA1 engine without JUCE. Used by tools/tune_presets.py
+# and by the DOA1 MCP sound matcher (tools/doa1_mcp).
+add_executable(preset_lab tools/preset_lab.cpp)
+target_compile_features(preset_lab PRIVATE cxx_std_17)
